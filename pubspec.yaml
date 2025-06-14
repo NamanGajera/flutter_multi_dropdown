@@ -1,7 +1,11 @@
 name: flutter_multi_dropdown
 description: 'Flutter multi-select dropdown with checkboxes and built-in "Select All" option.'
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/NamanGajera/flutter_multi_dropdown.git
+topics:
+  - dropdown
+  - multi-select
+  - flutter-widget
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
