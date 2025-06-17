@@ -6,19 +6,8 @@ topics:
   - dropdown
   - multi-select
   - flutter-widget
-  - form
-  - ui
-  - widgets
-  - checklist
   - selection
-  - filter
-  - picker
-  - material
-  - cupertino
-  - input
-  - menu
   - search
-  - tags
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
