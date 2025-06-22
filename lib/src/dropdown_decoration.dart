@@ -45,11 +45,23 @@ class DropdownDecoration {
   /// Width of the checkbox border
   final double checkboxBorderWidth;
 
-  /// Color of the dropdown icon
-  final Color? dropdownIconColor;
+  /// Color of the colse dropdown icon
+  final Color? colseDropdownIconColor;
 
-  /// Custom widget to replace the default dropdown icon
-  final Widget? dropdownIcon;
+  /// Color of the open dropdown icon
+  final Color? openDropdownIconColor;
+
+  /// Custom widget to replace the default close dropdown icon
+  final Widget? closeDropdownIcon;
+
+  /// Custom widget to replace the default open dropdown icon
+  final Widget? openDropdownIcon;
+
+  /// Custom size of colse dropdown icon
+  final double? closeDropdownIconSize;
+
+  /// Custom size of open dropdown icon
+  final double? openDropdownIconSize;
 
   /// Custom decoration for the dropdown button
   final BoxDecoration? dropdownDecoration;
@@ -85,13 +97,17 @@ class DropdownDecoration {
     this.itemTextStyle,
     this.checkboxActiveColor,
     this.checkboxInActiveColor,
-    this.dropdownIconColor = Colors.grey,
+    this.colseDropdownIconColor = Colors.grey,
+    this.openDropdownIconColor = Colors.grey,
     this.checkColor,
-    this.dropdownIcon,
+    this.closeDropdownIcon,
+    this.openDropdownIcon,
     this.dropdownDecoration,
     this.dropdownListDecoration,
     this.boxShadow,
     this.checkboxBorderWidth = 1.5,
     this.searchDecoration = const DropdownSearchDecoration(),
+    this.closeDropdownIconSize,
+    this.openDropdownIconSize,
   });
 }

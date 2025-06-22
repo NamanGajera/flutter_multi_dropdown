@@ -58,6 +58,9 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
   /// Whether to display select all
   final bool showSelectAll;
 
+  /// Whether to auto close dropdown on seect item
+  final bool autoCloseOnItemTap;
+
   /// Builder function for empty state
   ///
   /// Example:
@@ -97,6 +100,7 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
     this.isEmptyData = false,
     this.showLoading = false,
     this.showSelectAll = true,
+    this.autoCloseOnItemTap = false,
   });
 
   @override
@@ -111,7 +115,6 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
   bool _selectAll = false;
   late MultiDropdownController<T> _internalController;
   late List<DropDownMenuItemData<T>> _currentItems;
-  late List<DropDownMenuItemData<T>> _filteredItems;
   final SearchController _searchController = SearchController();
 
   MultiDropdownController<T> get _effectiveController =>
@@ -132,7 +135,6 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
 
   void _initializeItems() {
     _currentItems = List.from(widget.items);
-    _filteredItems = _currentItems;
   }
 
   void _setupInitialSelection() {
@@ -161,13 +163,12 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
 
   void _updateItemsIfChanged(FlutterMultiDropdown<T> oldWidget) {
     if (!listEquals(widget.items, oldWidget.items)) {
-      final selectedIds = _filteredItems
+      final selectedIds = _currentItems
           .where((item) => item.isSelected)
           .map((item) => item.id)
           .toList();
 
       _currentItems = List.from(widget.items);
-      _filteredItems = List.from(widget.items);
       _updateSelectionFromIds(selectedIds);
     }
   }
@@ -179,7 +180,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
   }
 
   List<T> _getSelectedIds() {
-    return _filteredItems
+    return _currentItems
         .where((item) => item.isSelected)
         .map((item) => item.id)
         .toList();
@@ -187,7 +188,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
 
   void _updateSelectionFromIds(List<T> selectedIds) {
     setState(() {
-      for (var item in _filteredItems) {
+      for (var item in _currentItems) {
         item.isSelected = selectedIds.contains(item.id);
       }
       _updateSelectAllState();
@@ -196,30 +197,23 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
 
   void _updateSelectAllState() {
     setState(() {
-      _selectAll = _filteredItems.isEmpty
+      _selectAll = _currentItems.isEmpty
           ? false
-          : _filteredItems.every((item) => item.isSelected == true);
+          : _currentItems.every((item) => item.isSelected == true);
     });
   }
 
   void _toggleSelectAll(bool? value) {
     setState(() {
       _selectAll = value ?? false;
-      for (var item in _filteredItems) {
+      for (var item in _currentItems) {
         item.isSelected = _selectAll;
       }
       _notifySelectionChanged();
     });
-    Future.delayed(const Duration(milliseconds: 50), _hideDropdown);
-  }
-
-  void _toggleItem(int index, bool? value) {
-    setState(() {
-      _filteredItems[index].isSelected = value ?? false;
-      _updateSelectAllState();
-      _notifySelectionChanged();
-    });
-    Future.delayed(const Duration(milliseconds: 50), _hideDropdown);
+    if (widget.autoCloseOnItemTap) {
+      Future.delayed(const Duration(milliseconds: 50), _hideDropdown);
+    }
   }
 
   void _hideDropdown() {
@@ -289,10 +283,9 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                               _buildSelectAllOption(context, changeState),
                             if (widget.showSelectAll) const Divider(height: 1),
                             if (widget.showLoading) _buildLoadingState(context),
-                            if (_filteredItems.isEmpty || widget.isEmptyData)
+                            if (_currentItems.isEmpty || widget.isEmptyData)
                               _buildEmptyState(context),
-                            if (_filteredItems.isNotEmpty &&
-                                !widget.isEmptyData)
+                            if (_currentItems.isNotEmpty && !widget.isEmptyData)
                               ..._buildItemList(context, changeState),
                           ],
                         ),
@@ -312,14 +305,6 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     return DropdownSearchField(
       controller: _searchController,
       onChanged: (value) {
-        if (value.trim().isEmpty) {
-          _filteredItems = _currentItems;
-        } else {
-          _filteredItems = _currentItems
-              .where((item) =>
-                  item.name.toLowerCase().contains(value.trim().toLowerCase()))
-              .toList();
-        }
         changeState(() {});
       },
       decoration: widget.decoration.searchDecoration,
@@ -374,8 +359,16 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
 
   List<Widget> _buildItemList(
       BuildContext context, void Function(void Function()) changeState) {
+    // Filter items based on search text
+    final displayItems = _searchController.text.trim().isEmpty
+        ? _currentItems
+        : _currentItems
+            .where((item) => item.name
+                .toLowerCase()
+                .contains(_searchController.text.trim().toLowerCase()))
+            .toList();
     return List.generate(
-      _filteredItems.length,
+      displayItems.length,
       (index) => Theme(
         data: Theme.of(context).copyWith(
           checkboxTheme: CheckboxThemeData(
@@ -387,13 +380,18 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
         ),
         child: CheckboxListTile(
           title: Text(
-            _filteredItems[index].name,
+            displayItems[index].name,
             style: widget.decoration.itemTextStyle,
           ),
           checkColor: widget.decoration.checkColor ?? const Color(0xFFFFFFFF),
-          value: _filteredItems[index].isSelected,
+          value: displayItems[index].isSelected,
           onChanged: (value) {
-            _toggleItem(index, value);
+            displayItems[index].isSelected = value ?? false;
+            _updateSelectAllState();
+            _notifySelectionChanged();
+            if (widget.autoCloseOnItemTap) {
+              Future.delayed(const Duration(milliseconds: 50), _hideDropdown);
+            }
             changeState(() {});
           },
           activeColor: widget.decoration.checkboxActiveColor,
@@ -446,14 +444,21 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                 ),
               ),
               if (widget.suffix != null) widget.suffix!,
-              if (widget.suffix == null)
-                widget.decoration.dropdownIcon ??
-                    Icon(
-                      _isDropdownOpen
-                          ? Icons.arrow_drop_up
-                          : Icons.arrow_drop_down,
-                      color: widget.decoration.dropdownIconColor,
-                    ),
+              if (widget.suffix == null) ...[
+                _isDropdownOpen
+                    ? widget.decoration.closeDropdownIcon ??
+                        Icon(
+                          Icons.close,
+                          color: widget.decoration.colseDropdownIconColor,
+                          size: widget.decoration.closeDropdownIconSize,
+                        )
+                    : widget.decoration.openDropdownIcon ??
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: widget.decoration.openDropdownIconColor,
+                          size: widget.decoration.openDropdownIconSize,
+                        ),
+              ]
             ],
           ),
         ),
@@ -463,7 +468,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
 
   String _getDisplayText() {
     final selectedItems =
-        _filteredItems.where((item) => item.isSelected).toList();
+        _currentItems.where((item) => item.isSelected).toList();
 
     if (selectedItems.isEmpty) {
       return widget.placeholder ?? 'Select Items';
@@ -476,7 +481,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
 
   TextStyle? _getTextStyle() {
     final selectedItems =
-        _filteredItems.where((item) => item.isSelected).toList();
+        _currentItems.where((item) => item.isSelected).toList();
     return selectedItems.isEmpty
         ? widget.decoration.placeholderTextStyle
         : widget.decoration.selectedItemTextStyle;

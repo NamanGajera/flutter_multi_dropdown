@@ -54,38 +54,39 @@ class _DropDownExampleState extends State<DropDownExample> {
         padding: const EdgeInsets.symmetric(horizontal: 48.0, vertical: 80),
         child: Column(
           children: [
-            FlutterMultiDropdown(
-              items: itemList,
-              controller: dropdownController,
-              onSelectionChanged: (selectedIds) {
-                debugPrint("Selected Ids => $selectedIds");
-              },
-              enableSearch: true,
-              decoration: DropdownDecoration(
-                searchDecoration: DropdownSearchDecoration(
-                  borderColor: Colors.grey,
-                ),
-              ),
-              showSelectAll: true,
-              placeholder: 'Select item',
-            ),
-            SizedBox(height: 10),
-            FlutterMultiDropdown(
-              items: itemList,
-              controller: dropdownController,
-              onSelectionChanged: (selectedIds) {
-                debugPrint("Selected Ids => $selectedIds");
-              },
-              enableSearch: true,
-              decoration: DropdownDecoration(
-                searchDecoration: DropdownSearchDecoration(
-                  borderColor: Colors.grey,
-                ),
-              ),
-              showSelectAll: false,
-              isEmptyData: true,
-              placeholder: 'Select item',
-            ),
+            // FlutterMultiDropdown(
+            //   items: itemList,
+            //   controller: dropdownController,
+            //   onSelectionChanged: (selectedIds) {
+            //     debugPrint("Selected Ids => $selectedIds");
+            //   },
+            //   enableSearch: true,
+            //   decoration: DropdownDecoration(
+            //     searchDecoration: DropdownSearchDecoration(
+            //       borderColor: Colors.grey,
+            //     ),
+            //     maxHeight: 300,
+            //   ),
+            //   showSelectAll: true,
+            //   placeholder: 'Select item',
+            // ),
+            // SizedBox(height: 10),
+            // FlutterMultiDropdown(
+            //   items: itemList,
+            //   controller: dropdownController,
+            //   onSelectionChanged: (selectedIds) {
+            //     debugPrint("Selected Ids => $selectedIds");
+            //   },
+            //   enableSearch: true,
+            //   decoration: DropdownDecoration(
+            //     searchDecoration: DropdownSearchDecoration(
+            //       borderColor: Colors.grey,
+            //     ),
+            //   ),
+            //   showSelectAll: false,
+            //   isEmptyData: true,
+            //   placeholder: 'Select item',
+            // ),
             SizedBox(height: 10),
             FlutterMultiDropdown(
               items: itemList,
@@ -93,39 +94,44 @@ class _DropDownExampleState extends State<DropDownExample> {
                 debugPrint("Selected Ids => $selectedIds");
               },
               showSelectedItemName: false,
+              enableSearch: true,
               placeholder: 'Select item',
               decoration: DropdownDecoration(
                 borderRadius: 12,
                 borderColor: Colors.green,
+                searchDecoration: DropdownSearchDecoration(
+                  backgroundColor: Colors.green.shade50,
+                ),
+                maxHeight: 300,
               ),
-              showLoading: true,
+              // showLoading: true,
             ),
-            SizedBox(height: 10),
-            FlutterMultiDropdown(
-              items: itemList,
-              onSelectionChanged: (selectedIds) {
-                debugPrint("Selected Ids => $selectedIds");
-              },
-              placeholder: 'Select item',
-              showSelectedItemName: false,
-              decoration: DropdownDecoration(
-                dropdownIconColor: Colors.white,
-                borderRadius: 12,
-                backgroundColor: Colors.green,
-                placeholderTextStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                selectedItemTextStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                itemTextStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                checkboxInActiveColor: Colors.white,
-                checkboxActiveColor: Colors.white,
-                checkColor: Colors.black,
-              ),
-            ),
+            // SizedBox(height: 10),
+            // FlutterMultiDropdown(
+            //   items: itemList,
+            //   onSelectionChanged: (selectedIds) {
+            //     debugPrint("Selected Ids => $selectedIds");
+            //   },
+            //   placeholder: 'Select item',
+            //   showSelectedItemName: false,
+            //   decoration: DropdownDecoration(
+            //     dropdownIconColor: Colors.white,
+            //     borderRadius: 12,
+            //     backgroundColor: Colors.green,
+            //     placeholderTextStyle: TextStyle(
+            //       color: Colors.white,
+            //     ),
+            //     selectedItemTextStyle: TextStyle(
+            //       color: Colors.white,
+            //     ),
+            //     itemTextStyle: TextStyle(
+            //       color: Colors.white,
+            //     ),
+            //     checkboxInActiveColor: Colors.white,
+            //     checkboxActiveColor: Colors.white,
+            //     checkColor: Colors.black,
+            //   ),
+            // ),
           ],
         ),
       ),
