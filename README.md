@@ -5,6 +5,25 @@
 
 A highly customizable multi-select dropdown widget for Flutter with select-all functionality, type safety, and comprehensive decoration options.
 
+## ✨ Features
+
+- **Multi-Selection Support** - Intuitive interface for selecting multiple items
+- **Search Functionality** - Built-in search to quickly find items in large lists
+- **Select All Option** - Built-in "Select All" functionality with customizable text
+- **Visual Feedback** - Clear checkbox indicators for selection state
+- **Type Safety** - Generic implementation works with any data type
+- **Programmatic Control** - Full control via `MultiDropdownController`
+- **Customizable UI** - Extensive decoration options for complete visual control
+
+## 📸 Screenshots & Demo
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/example_video.gif" width="200" alt="Example">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_1.jpg" width="200" alt="Screenshot_1">
+  <img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_2.jpg" width="200" alt="Simple Usage">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/change_decoration.jpg" width="200" height="200" alt="Custom Decoration">
+</div>
+
 ## 📦 Installation
 
 Add the package to your `pubspec.yaml`:
@@ -62,6 +81,7 @@ FlutterMultiDropdown<int>(
 | `showLoading`          | Show loading indicator            | `bool`                           | `false`          |
 | `loadingBuilder`       | Custom loading widget builder     | `Widget Function(BuildContext)?` | `null`           |
 | `emptyBuilder`         | Custom empty state widget builder | `Widget Function(BuildContext)?` | `null`           |
+| `autoCloseOnItemTap`         | control dropdown close behavior after item selection | `bool` | `false`           |
 
 ### Decoration Properties
 
@@ -109,6 +129,7 @@ FlutterMultiDropdown<String>(
     DropDownMenuItemData(name: 'Banana', id: 'fruit_banana'),
     DropDownMenuItemData(name: 'Orange', id: 'fruit_orange'),
   ],
+  enableSearch: true,
   decoration: DropdownDecoration(
     borderRadius: 12,
     borderColor: Colors.blue.shade300,
@@ -124,23 +145,6 @@ FlutterMultiDropdown<String>(
 )
 ```
 
-## ✨ Features
-
-- **Multi-Selection Support** - Intuitive interface for selecting multiple items
-- **Select All Option** - Built-in "Select All" functionality with customizable text
-- **Visual Feedback** - Clear checkbox indicators for selection state
-- **Type Safety** - Generic implementation works with any data type
-- **Programmatic Control** - Full control via `MultiDropdownController`
-- **Customizable UI** - Extensive decoration options for complete visual control
-
-## 📸 Screenshots
-
-<div align="center">
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/select_all.jpg" width="200" alt="Select All">
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/show_selected_item_count.jpg" width="200" alt="Item Count">
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/simple_use_dropdown.jpg" width="200" alt="Simple Usage">
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/change_decoration.jpg" width="200" height="200" alt="Custom Decoration">
-</div>
 
 ## 📜 License
 
