@@ -1,34 +1,50 @@
-/// Represents an item in the dropdown menu with selection state.
-///
-/// Each item has:
-/// - A display [name]
-/// - A unique [id] of generic type T
-/// - A selection state [isSelected]
+/// A generic model class to represent an item in a custom dropdown menu.
 class DropDownMenuItemData<T> {
-  /// The display name of the item
+  /// The display name of the dropdown item shown to the user.
   final String name;
 
-  /// The unique identifier of the item
+  /// The unique identifier or value associated with this item.
+  ///
+  /// This can be of any type depending on your use case (e.g., `int`, `String`, etc.).
   final T id;
 
-  /// Whether the item is currently selected
+  /// Whether this item is currently selected.
+  ///
+  /// Defaults to `false`.
   bool isSelected;
 
-  /// Creates a [DropDownMenuItemData] with the given properties
+  /// Whether this item is enabled (can be interacted with).
+  ///
+  /// If `false`, the item will typically be shown as disabled in the UI.
+  /// Defaults to `true`.
+  bool enabled;
+
+  /// Creates a new instance of [DropDownMenuItemData].
+  ///
+  /// The [name] and [id] are required. Optionally, you can specify the initial
+  /// [isSelected] and [enabled] state.
   DropDownMenuItemData({
     required this.name,
     required this.id,
     this.isSelected = false,
+    this.enabled = true,
   });
 
+  /// Compares two [DropDownMenuItemData] objects for equality.
+  ///
+  /// Returns `true` if all properties ([name], [id], [isSelected], and [enabled]) are equal.
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is DropDownMenuItemData &&
           runtimeType == other.runtimeType &&
           name == other.name &&
-          id == other.id;
+          id == other.id &&
+          isSelected == other.isSelected &&
+          enabled == other.enabled;
 
+  /// Returns a hash code based on the properties of the object.
   @override
-  int get hashCode => name.hashCode ^ id.hashCode;
+  int get hashCode =>
+      name.hashCode ^ id.hashCode ^ isSelected.hashCode ^ enabled.hashCode;
 }

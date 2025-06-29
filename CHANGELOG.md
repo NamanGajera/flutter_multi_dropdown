@@ -1,3 +1,10 @@
+## 0.0.5 (28-06-2025)
+
+- Added custom item builder (itemBuilder property) for complete control over item rendering
+- Added custom select all builder for complete control on select all widget
+- Added disabled items support (enabled property in DropDownMenuItemData)
+- Improved selection logic to properly handle disabled items
+
 ## 0.0.4 (22-06-2025)
 
 ### New Features
@@ -23,4 +30,4 @@
 
 ## 0.0.1 (14-06-2025)
 
-- Initial Relese
+- Initial Release

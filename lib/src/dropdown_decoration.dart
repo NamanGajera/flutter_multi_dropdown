@@ -45,8 +45,8 @@ class DropdownDecoration {
   /// Width of the checkbox border
   final double checkboxBorderWidth;
 
-  /// Color of the colse dropdown icon
-  final Color? colseDropdownIconColor;
+  /// Color of the close dropdown icon
+  final Color? closeDropdownIconColor;
 
   /// Color of the open dropdown icon
   final Color? openDropdownIconColor;
@@ -57,7 +57,7 @@ class DropdownDecoration {
   /// Custom widget to replace the default open dropdown icon
   final Widget? openDropdownIcon;
 
-  /// Custom size of colse dropdown icon
+  /// Custom size of close dropdown icon
   final double? closeDropdownIconSize;
 
   /// Custom size of open dropdown icon
@@ -97,7 +97,7 @@ class DropdownDecoration {
     this.itemTextStyle,
     this.checkboxActiveColor,
     this.checkboxInActiveColor,
-    this.colseDropdownIconColor = Colors.grey,
+    this.closeDropdownIconColor = Colors.grey,
     this.openDropdownIconColor = Colors.grey,
     this.checkColor,
     this.closeDropdownIcon,
