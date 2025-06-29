@@ -10,6 +10,8 @@ A highly customizable multi-select dropdown widget for Flutter with select-all f
 - **Multi-Selection Support** - Intuitive interface for selecting multiple items
 - **Search Functionality** - Built-in search to quickly find items in large lists
 - **Select All Option** - Built-in "Select All" functionality with customizable text
+- **Full UI Control** – Customize every part with itemBuilder & selectAllBuilder!
+- **Disabled Items** – Mark items as non-selectable via DropDownMenuItemData.
 - **Visual Feedback** - Clear checkbox indicators for selection state
 - **Type Safety** - Generic implementation works with any data type
 - **Programmatic Control** - Full control via `MultiDropdownController`
@@ -17,11 +19,11 @@ A highly customizable multi-select dropdown widget for Flutter with select-all f
 
 ## 📸 Screenshots & Demo
 
-<div align="center">
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/example_video.gif" width="200" alt="Example">
+<div >
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/demo_video.gif" width="200" alt="Example">
 <img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_1.jpg" width="200" alt="Screenshot_1">
-  <img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_2.jpg" width="200" alt="Simple Usage">
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/change_decoration.jpg" width="200" height="200" alt="Custom Decoration">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_2.jpg" width="200" alt="Screenshot_2">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/screenshot_4.jpg" width="200"  alt="Screenshot_4">
 </div>
 
 ## 📦 Installation
@@ -64,24 +66,26 @@ FlutterMultiDropdown<int>(
 
 ### Widget Properties
 
-| Property               | Description                       | Type                             | Default          |
-| ---------------------- | --------------------------------- | -------------------------------- | ---------------- |
-| `items`                | List of selectable items          | `List<DropDownMenuItemData<T>>`  | **Required**     |
-| `onSelectionChanged`   | Callback when selection changes   | `Function(List<T>)?`             | `null`           |
-| `placeholder`          | Placeholder text                  | `String?`                        | `'Select Items'` |
-| `selectAllText`        | "Select All" option text          | `String?`                        | `'Select All'`   |
-| `prefix`               | Widget before selected items      | `Widget?`                        | `null`           |
-| `suffix`               | Widget after selected items       | `Widget?`                        | `null`           |
-| `initialValue`         | Initially selected values         | `List<T>?`                       | `null`           |
-| `controller`           | Programmatic control              | `MultiDropdownController<T>?`    | `null`           |
-| `showSelectedItemName` | Show names vs count               | `bool`                           | `true`           |
-| `showSelectAll`        | Show select all option            | `bool`                           | `true`           |
-| `enableSearch`         | Enable search functionality       | `bool?`                          | `false`          |
-| `isEmptyData`          | Show names vs count               | `bool`                           | `fase`           |
-| `showLoading`          | Show loading indicator            | `bool`                           | `false`          |
-| `loadingBuilder`       | Custom loading widget builder     | `Widget Function(BuildContext)?` | `null`           |
-| `emptyBuilder`         | Custom empty state widget builder | `Widget Function(BuildContext)?` | `null`           |
-| `autoCloseOnItemTap`         | control dropdown close behavior after item selection | `bool` | `false`           |
+| Property               | Description                                          | Type                             | Default          |
+| ---------------------- | ---------------------------------------------------- | -------------------------------- | ---------------- |
+| `items`                | List of selectable items                             | `List<DropDownMenuItemData<T>>`  | **Required**     |
+| `onSelectionChanged`   | Callback when selection changes                      | `Function(List<T>)?`             | `null`           |
+| `placeholder`          | Placeholder text                                     | `String?`                        | `'Select Items'` |
+| `selectAllText`        | "Select All" option text                             | `String?`                        | `'Select All'`   |
+| `itemBuilder`          | Custom item widget builder                           | `Widget?`                        | `null`           |
+| `selectAllBuilder`     | Custom select all widget builder                     | `Widget?`                        | `null`           |
+| `prefix`               | Widget before selected items                         | `Widget?`                        | `null`           |
+| `suffix`               | Widget after selected items                          | `Widget?`                        | `null`           |
+| `initialValue`         | Initially selected values                            | `List<T>?`                       | `null`           |
+| `controller`           | Programmatic control                                 | `MultiDropdownController<T>?`    | `null`           |
+| `showSelectedItemName` | Show names vs count                                  | `bool`                           | `true`           |
+| `showSelectAll`        | Show select all option                               | `bool`                           | `true`           |
+| `enableSearch`         | Enable search functionality                          | `bool?`                          | `false`          |
+| `isEmptyData`          | Show names vs count                                  | `bool`                           | `fase`           |
+| `showLoading`          | Show loading indicator                               | `bool`                           | `false`          |
+| `loadingBuilder`       | Custom loading widget builder                        | `Widget Function(BuildContext)?` | `null`           |
+| `emptyBuilder`         | Custom empty state widget builder                    | `Widget Function(BuildContext)?` | `null`           |
+| `autoCloseOnItemTap`   | control dropdown close behavior after item selection | `bool`                           | `false`          |
 
 ### Decoration Properties
 
@@ -94,18 +98,21 @@ decoration: DropdownDecoration(
 )
 ```
 
-| Property                | Description             | Type                       | Default                                              |
-| ----------------------- | ----------------------- | -------------------------- | ---------------------------------------------------- |
-| `borderRadius`          | Border radius           | `double`                   | `6.0`                                                |
-| `borderColor`           | Border color            | `Color`                    | `Colors.grey`                                        |
-| `backgroundColor`       | Background color        | `Color`                    | `Colors.white`                                       |
-| `contentPadding`        | Internal padding        | `EdgeInsets`               | `EdgeInsets.symmetric(horizontal: 16, vertical: 12)` |
-| `elevation`             | Dropdown elevation      | `double`                   | `4.0`                                                |
-| `maxHeight`             | Max dropdown height     | `double`                   | `260`                                                |
-| `checkboxActiveColor`   | Active checkbox color   | `Color?`                   | Theme primary                                        |
-| `checkboxInActiveColor` | Inactive checkbox color | `Color?`                   | `Colors.black`                                       |
-| `dropdownIconColor`     | Dropdown icon color     | `Color?`                   | `Colors.grey`                                        |
-| `searchDecoration`      | Search filed decoration | `DropdownSearchDecoration` | `null`                                               |
+| Property                 | Description               | Type                       | Default                                              |
+| ------------------------ | ------------------------- | -------------------------- | ---------------------------------------------------- |
+| `borderRadius`           | Border radius             | `double`                   | `6.0`                                                |
+| `borderColor`            | Border color              | `Color`                    | `Colors.grey`                                        |
+| `backgroundColor`        | Background color          | `Color`                    | `Colors.white`                                       |
+| `contentPadding`         | Internal padding          | `EdgeInsets`               | `EdgeInsets.symmetric(horizontal: 16, vertical: 12)` |
+| `elevation`              | Dropdown elevation        | `double`                   | `4.0`                                                |
+| `maxHeight`              | Max dropdown height       | `double`                   | `260`                                                |
+| `checkboxActiveColor`    | Active checkbox color     | `Color?`                   | Theme primary                                        |
+| `checkboxInActiveColor`  | Inactive checkbox color   | `Color?`                   | `Colors.black`                                       |
+| `closeDropdownIcon`      | Custom close icon         | `Widget?`                  | `null`                                               |
+| `closeDropdownIconColor` | Close Dropdown icon color | `Color?`                   | `Colors.grey`                                        |
+| `openDropdownIcon`       | Custom open icon          | `Widget?`                  | `null`                                               |
+| `openDropdownIconColor`  | Open Dropdown icon color  | `Color?`                   | `Colors.grey`                                        |
+| `searchDecoration`       | Search filed decoration   | `DropdownSearchDecoration` | `null`                                               |
 
 ## 🎛️ Controller Methods
 
@@ -123,28 +130,97 @@ controller.clearSelection();
 ## 🎨 Complete Example
 
 ```dart
-FlutterMultiDropdown<String>(
-  items: const [
-    DropDownMenuItemData(name: 'Apple', id: 'fruit_apple'),
-    DropDownMenuItemData(name: 'Banana', id: 'fruit_banana'),
-    DropDownMenuItemData(name: 'Orange', id: 'fruit_orange'),
-  ],
-  enableSearch: true,
-  decoration: DropdownDecoration(
-    borderRadius: 12,
-    borderColor: Colors.blue.shade300,
-    checkboxActiveColor: Colors.blue,
-    maxHeight: 300,
-    itemTextStyle: const TextStyle(fontWeight: FontWeight.w500),
-  ),
-  prefix: const Icon(Icons.person),
-  selectAllText: 'Select All Fruits',
-  onSelectionChanged: (selected) {
-    debugPrint('Selected fruits: $selected');
-  },
-)
-```
+final MultiDropdownController fruitsController = MultiDropdownController();
 
+final List<DropDownMenuItemData> fruitsItems = [
+    DropDownMenuItemData(name: "Apple", id: 1),
+    DropDownMenuItemData(name: "Banana", id: 2),
+    DropDownMenuItemData(name: "Orange", id: 3),
+    DropDownMenuItemData(name: "Mango", id: 4, isSelected: true),
+    DropDownMenuItemData(name: "Grapes", id: 5, enabled: false),
+];
+
+ FlutterMultiDropdown(
+     items: fruitsItems,
+     controller: fruitsController,
+     itemBuilder: (context, item, isSelected, onChanged) {
+      return InkWell(
+        onTap: () => onChanged!(!isSelected),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Icon(
+                isSelected
+                    ? Icons.check_circle
+                    : Icons.circle_outlined,
+                color: isSelected ? Colors.green : Colors.grey[400],
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  item.name,
+                  style: TextStyle(
+                    color:item.enabled ? Colors.black87 : Colors.grey,
+                    fontSize: 15,
+                    fontWeight: isSelected
+                        ? FontWeight.w500
+                        : FontWeight.normal,
+                  ),
+                ),
+              ),
+              if (!item.enabled)
+                Icon(Icons.lock_outline,size: 16, color: Colors.grey[400]),
+            ],
+          ),
+        ),
+      );
+    },
+    selectAllBuilder: (context, selectAll, onChanged) {
+      return InkWell(
+        onTap: () => onChanged!(!selectAll),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Icon(
+                selectAll
+                    ? Icons.check_circle
+                    : Icons.circle_outlined,
+                color: selectAll ? Colors.green : Colors.grey[400],
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  "Select All",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+    onSelectionChanged: (selectedIds) {
+      debugPrint("Selected Fruits: $selectedIds");
+    },
+    decoration: DropdownDecoration(
+      backgroundColor: Colors.white,
+      borderRadius: 12,
+      borderColor: Colors.grey[300]!,
+      maxHeight: 250,
+    ),
+    placeholder: 'Choose fruits...',
+),
+
+```
 
 ## 📜 License
 
