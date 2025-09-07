@@ -20,7 +20,6 @@ A highly customizable multi-select dropdown widget for Flutter with select-all f
 ## 📸 Screenshots & Demo
 
 <div >
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/demo_video.gif" width="200" alt="Example">
 <img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_1.jpg" width="200" alt="Screenshot_1">
 <img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_2.jpg" width="200" alt="Screenshot_2">
 <img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/screenshot_4.jpg" width="200"  alt="Screenshot_4">

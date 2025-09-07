@@ -1,6 +1,6 @@
 name: flutter_multi_dropdown
 description: 'Flutter multi-select dropdown with checkboxes and built-in "Select All" option with search functionality.'
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/NamanGajera/flutter_multi_dropdown
 topics:
   - dropdown
@@ -24,4 +24,4 @@ dev_dependencies:
 
 screenshots:
   - description: "Example screenshot 1"
-    path: Images/demo_video.gif
+    path: Images/Screenshot_1.jpg

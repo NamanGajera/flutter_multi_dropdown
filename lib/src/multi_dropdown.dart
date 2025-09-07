@@ -209,6 +209,14 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     super.didUpdateWidget(oldWidget);
     _updateControllerListener(oldWidget);
     _updateItemsIfChanged(oldWidget);
+
+    if (widget.showLoading != oldWidget.showLoading && _overlayEntry != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_overlayEntry != null) {
+          _overlayEntry!.markNeedsBuild();
+        }
+      });
+    }
   }
 
   void _updateControllerListener(FlutterMultiDropdown<T> oldWidget) {
@@ -372,9 +380,12 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                               _buildSelectAllOption(context, changeState),
                             if (widget.showSelectAll) const Divider(height: 1),
                             if (widget.showLoading) _buildLoadingState(context),
-                            if (_currentItems.isEmpty || widget.isEmptyData)
+                            if ((_currentItems.isEmpty || widget.isEmptyData) &&
+                                !widget.showLoading)
                               _buildEmptyState(context),
-                            if (_currentItems.isNotEmpty && !widget.isEmptyData)
+                            if (_currentItems.isNotEmpty &&
+                                !widget.isEmptyData &&
+                                !widget.showLoading)
                               ..._buildItemList(context, changeState),
                           ],
                         ),
@@ -489,6 +500,10 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                 .toLowerCase()
                 .contains(_searchController.text.trim().toLowerCase()))
             .toList();
+
+    if (displayItems.isEmpty) {
+      return [_buildEmptyState(context)];
+    }
 
     return List.generate(displayItems.length, (index) {
       final item = displayItems[index];

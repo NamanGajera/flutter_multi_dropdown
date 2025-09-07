@@ -1,3 +1,8 @@
+## 0.0.6 (09-09-2025)
+
+- Bug Fix
+- Added "No data found" message when search has no results.
+
 ## 0.0.5 (28-06-2025)
 
 - Added custom item builder (itemBuilder property) for complete control over item rendering
