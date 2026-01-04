@@ -23,9 +23,11 @@ A Flutter dropdown widget with both single and multi-select capabilities. Featur
 ## 📸 Screenshots & Demo
 
 <div >
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_1.jpg" width="200" alt="Screenshot_1">
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/Screenshot_2.jpg" width="200" alt="Screenshot_2">
-<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/screenshot_4.jpg" width="200"  alt="Screenshot_4">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/custom_item_builder_dropdown.png" width="200" alt="Screenshot_1">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/single_selection_dropdown.png" width="200"  alt="Screenshot_2">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/search_view_dropdown.png" width="200" alt="Screenshot_3">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/max_selection_dropdown.png" width="200" alt="Screenshot_4">
+<img src="https://raw.githubusercontent.com/NamanGajera/flutter_multi_dropdown/main/Images/compact_view_dropdown.png" width="200" alt="Screenshot_5">
 </div>
 
 ## 📦 Installation
