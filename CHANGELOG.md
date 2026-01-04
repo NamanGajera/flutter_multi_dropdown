@@ -1,3 +1,15 @@
+## [1.0.0] - 03-01-2026
+
+### Added
+
+- Selection limit support with `maxSelection` property to restrict the number of selectable items
+- Callback for max selection reached with `onMaxSelectionReached` to handle user feedback when the selection limit is exceeded
+- Single selection mode using `selectionMode` (`DropdownSelectionMode.single` or `DropdownSelectionMode.multiple`)
+- New callback `onSingleItemSelected` for single selection mode
+- New parameter `initialSingleValue` for initializing single selection
+- Radio button UI for single selection items instead of checkboxes
+- Conditional rendering – Select All option and max selection are shown only in multi-select mode
+
 ## 0.0.6 (09-09-2025)
 
 - Bug Fix
