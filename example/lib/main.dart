@@ -11,350 +11,582 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Multi Dropdown Showcase',
+      title: 'FlutterMultiDropdown',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: const Color(0xFF0F172A),
           brightness: Brightness.light,
         ),
         useMaterial3: true,
+        fontFamily: 'SF Pro Display',
       ),
-      home: const DropDownExample(),
+      home: const DropdownShowcase(),
     );
   }
 }
 
-class DropDownExample extends StatefulWidget {
-  const DropDownExample({super.key});
+class DropdownShowcase extends StatefulWidget {
+  const DropdownShowcase({super.key});
 
   @override
-  State<DropDownExample> createState() => _DropDownExampleState();
+  State<DropdownShowcase> createState() => _DropdownShowcaseState();
 }
 
-class _DropDownExampleState extends State<DropDownExample> {
-  // Different item lists for each example
-  final List<DropDownMenuItemData> fruitsItems = [
-    DropDownMenuItemData(name: "Apple", id: 1),
-    DropDownMenuItemData(name: "Banana", id: 2),
-    DropDownMenuItemData(name: "Orange", id: 3),
-    DropDownMenuItemData(name: "Mango", id: 4, isSelected: true),
-    DropDownMenuItemData(name: "Grapes", id: 5, enabled: false),
+class _DropdownShowcaseState extends State<DropdownShowcase> {
+  // Example 1: Countries
+  final List<DropDownMenuItemData> countries = [
+    DropDownMenuItemData(name: "United States", id: 1, isSelected: true),
+    DropDownMenuItemData(name: "United Kingdom", id: 2),
+    DropDownMenuItemData(name: "Canada", id: 3),
+    DropDownMenuItemData(name: "Australia", id: 4),
+    DropDownMenuItemData(name: "Germany", id: 5),
+    DropDownMenuItemData(name: "France", id: 6, enabled: false),
+    DropDownMenuItemData(name: "Japan", id: 7),
+    DropDownMenuItemData(name: "Brazil", id: 8),
   ];
 
-  final List<DropDownMenuItemData> techItems = [
-    DropDownMenuItemData(name: "Flutter", id: 1, isSelected: true),
-    DropDownMenuItemData(name: "React Native", id: 2),
-    DropDownMenuItemData(name: "Swift", id: 3),
-    DropDownMenuItemData(name: "Kotlin", id: 4),
-    DropDownMenuItemData(name: "Xamarin", id: 5, enabled: false),
-    DropDownMenuItemData(name: "Ionic", id: 6),
-    DropDownMenuItemData(name: "PhoneGap", id: 7),
+  // Example 2: Programming Languages
+  final List<DropDownMenuItemData> languages = [
+    DropDownMenuItemData(name: "Dart", id: 1, isSelected: true),
+    DropDownMenuItemData(name: "JavaScript", id: 2),
+    DropDownMenuItemData(name: "Python", id: 3, isSelected: true),
+    DropDownMenuItemData(name: "Java", id: 4),
+    DropDownMenuItemData(name: "C++", id: 5),
+    DropDownMenuItemData(name: "Go", id: 6),
+    DropDownMenuItemData(name: "Rust", id: 7),
+    DropDownMenuItemData(name: "TypeScript", id: 8),
+    DropDownMenuItemData(name: "Swift", id: 9),
+    DropDownMenuItemData(name: "Kotlin", id: 10),
   ];
 
-  final List<DropDownMenuItemData> colorItems = [
-    DropDownMenuItemData(name: "Red", id: 1, enabled: false),
-    DropDownMenuItemData(name: "Blue", id: 2, isSelected: true),
-    DropDownMenuItemData(name: "Green", id: 3),
-    DropDownMenuItemData(name: "Yellow", id: 4),
-    DropDownMenuItemData(name: "Purple", id: 5),
-    DropDownMenuItemData(name: "Orange", id: 6),
+  // Example 3: Priority Tags
+  final List<DropDownMenuItemData> priorities = [
+    DropDownMenuItemData(name: "Critical", id: 1, isSelected: true),
+    DropDownMenuItemData(name: "High", id: 2),
+    DropDownMenuItemData(name: "Medium", id: 3),
+    DropDownMenuItemData(name: "Low", id: 4),
+    DropDownMenuItemData(name: "Info", id: 5),
   ];
 
-  final List<DropDownMenuItemData> categoryItems = [
-    DropDownMenuItemData(name: "Electronics", id: 1),
-    DropDownMenuItemData(name: "Clothing", id: 2),
-    DropDownMenuItemData(name: "Books", id: 3, isSelected: true),
-    DropDownMenuItemData(name: "Home & Garden", id: 4),
-    DropDownMenuItemData(name: "Sports", id: 5),
+  // Example 4: Departments
+  final List<DropDownMenuItemData> departments = [
+    DropDownMenuItemData(name: "Engineering", id: 1, isSelected: true),
+    DropDownMenuItemData(name: "Marketing", id: 2),
+    DropDownMenuItemData(name: "Sales", id: 3, isSelected: true),
+    DropDownMenuItemData(name: "Human Resources", id: 4),
+    DropDownMenuItemData(name: "Finance", id: 5),
+    DropDownMenuItemData(name: "Operations", id: 6),
+    DropDownMenuItemData(name: "Customer Support", id: 7),
+    DropDownMenuItemData(name: "Product Management", id: 8),
   ];
 
-  final List<DropDownMenuItemData> skillItems = [
-    DropDownMenuItemData(name: "Problem Solving", id: 1, isSelected: true),
-    DropDownMenuItemData(name: "Communication", id: 2),
-    DropDownMenuItemData(name: "Leadership", id: 3),
-    DropDownMenuItemData(name: "Time Management", id: 4, enabled: false),
-    DropDownMenuItemData(name: "Creativity", id: 5),
-    DropDownMenuItemData(name: "Teamwork", id: 6, isSelected: true),
+  // Example 5: Features
+  final List<DropDownMenuItemData> features = [
+    DropDownMenuItemData(name: "Fast Performance", id: 1, isSelected: true),
+    DropDownMenuItemData(name: "Beautiful UI", id: 2, isSelected: true),
+    DropDownMenuItemData(name: "Secure", id: 3),
+    DropDownMenuItemData(name: "Responsive", id: 4),
+    DropDownMenuItemData(name: "Accessible", id: 5, enabled: false),
+    DropDownMenuItemData(name: "Multilingual", id: 6),
   ];
 
-  // Different controllers for each example
-  final MultiDropdownController fruitsController = MultiDropdownController();
-  final MultiDropdownController techController = MultiDropdownController();
-  final MultiDropdownController colorController = MultiDropdownController();
-  final MultiDropdownController categoryController = MultiDropdownController();
-  final MultiDropdownController skillController = MultiDropdownController();
+  // Example 6: Single Selection
+  final List<DropDownMenuItemData> currencies = [
+    DropDownMenuItemData(name: "US Dollar (USD)", id: 1, isSelected: true),
+    DropDownMenuItemData(name: "Euro (EUR)", id: 2),
+    DropDownMenuItemData(name: "British Pound (GBP)", id: 3, enabled: false),
+    DropDownMenuItemData(name: "Japanese Yen (JPY)", id: 4),
+    DropDownMenuItemData(name: "Swiss Franc (CHF)", id: 5),
+    DropDownMenuItemData(name: "Canadian Dollar (CAD)", id: 6, enabled: false),
+  ];
+
+  // Example 7: Loading & Empty States
+  final List<DropDownMenuItemData> dynamicItems = [];
+  bool isLoading = true;
+  bool isEmpty = false;
+
+  // Example 8: Skills
+  final List<DropDownMenuItemData> skills = [
+    DropDownMenuItemData(name: "Flutter Development", id: 1),
+    DropDownMenuItemData(name: "UI/UX Design", id: 2),
+    DropDownMenuItemData(name: "Backend Development", id: 3),
+    DropDownMenuItemData(name: "DevOps", id: 4, enabled: false),
+    DropDownMenuItemData(name: "Database Management", id: 5),
+    DropDownMenuItemData(name: "Cloud Architecture", id: 6),
+    DropDownMenuItemData(name: "Mobile Testing", id: 7),
+  ];
+
+  // Controllers
+  final MultiDropdownController countriesController = MultiDropdownController();
+  final MultiDropdownController languagesController = MultiDropdownController();
+  final MultiDropdownController prioritiesController = MultiDropdownController();
+  final MultiDropdownController departmentsController = MultiDropdownController();
+  final MultiDropdownController featuresController = MultiDropdownController();
+  final MultiDropdownController currenciesController = MultiDropdownController();
+  final MultiDropdownController dynamicController = MultiDropdownController();
+  final MultiDropdownController skillsController = MultiDropdownController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        isLoading = false;
+        isEmpty = false;
+      });
+    });
+  }
+
+  String getCountryFlag(String country) {
+    final flags = {
+      "United States": "🇺🇸",
+      "United Kingdom": "🇬🇧",
+      "Canada": "🇨🇦",
+      "Australia": "🇦🇺",
+      "Germany": "🇩🇪",
+      "France": "🇫🇷",
+      "Japan": "🇯🇵",
+      "Brazil": "🇧🇷",
+    };
+    return flags[country] ?? "🌍";
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text(
-          'Multi Dropdown Showcase',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            color: Colors.grey[200],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Example 1: Basic Fruits Selection
-            _buildExampleCard(
-              title: "Select Your Favorite Fruits",
-              subtitle: "Basic selection with custom styling",
-              child: FlutterMultiDropdown(
-                items: fruitsItems,
-                controller: fruitsController,
-                itemBuilder: (context, item, isSelected, onChanged) {
-                  return InkWell(
-                    onTap: () => onChanged!(!isSelected),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      child: Row(
-                        children: [
-                          Icon(
-                            isSelected
-                                ? Icons.check_circle
-                                : Icons.circle_outlined,
-                            color: isSelected ? Colors.green : Colors.grey[400],
-                            size: 20,
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              toolbarHeight: 15,
+              title: const Text(
+                '',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              centerTitle: false,
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.all(24),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // Example 1
+                  _ExampleSection(
+                    label: 'Custom Item Builder',
+                    description: 'Fully customizable item appearance',
+                    child: FlutterMultiDropdown(
+                      items: countries,
+                      controller: countriesController,
+                      itemBuilder: (context, item, isSelected, onChanged) {
+                        return InkWell(
+                          onTap: item.enabled ? () => onChanged!(!isSelected) : null,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected ? const Color(0xFF0F172A) : const Color(0xFFE2E8F0),
+                                      width: 2,
+                                    ),
+                                    color: isSelected ? const Color(0xFF0F172A) : Colors.transparent,
+                                  ),
+                                  child: isSelected ? const Icon(Icons.check, size: 12, color: Colors.white) : null,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(getCountryFlag(item.name), style: const TextStyle(fontSize: 20)),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    item.name,
+                                    style: TextStyle(
+                                      color: item.enabled ? const Color(0xFF0F172A) : const Color(0xFF94A3B8),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                if (!item.enabled) const Icon(Icons.lock_outline, size: 16, color: Color(0xFF94A3B8)),
+                              ],
+                            ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              item.name,
-                              style: TextStyle(
-                                color:
-                                    item.enabled ? Colors.black87 : Colors.grey,
-                                fontSize: 15,
-                                fontWeight: isSelected
-                                    ? FontWeight.w500
-                                    : FontWeight.normal,
+                        );
+                      },
+                      selectAllBuilder: (context, selectAll, onChanged) {
+                        return InkWell(
+                          onTap: () => onChanged!(!selectAll),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: selectAll ? const Color(0xFF0F172A) : const Color(0xFFE2E8F0),
+                                      width: 2,
+                                    ),
+                                    color: selectAll ? const Color(0xFF0F172A) : Colors.transparent,
+                                  ),
+                                  child: selectAll ? const Icon(Icons.check, size: 12, color: Colors.white) : null,
+                                ),
+                                const SizedBox(width: 12),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "Select All",
+                                    style: TextStyle(
+                                      color: const Color(0xFF0F172A),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      decoration: const DropdownDecoration(
+                        backgroundColor: Colors.white,
+                        borderRadius: 12,
+                        borderColor: Color(0xFFE2E8F0),
+                        maxHeight: 340,
+                      ),
+                      placeholder: 'Select countries',
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Example 2
+                  _ExampleSection(
+                    label: 'Search & Select All',
+                    description: 'Search with select all functionality',
+                    child: FlutterMultiDropdown(
+                      items: languages,
+                      controller: languagesController,
+                      enableSearch: true,
+                      showSelectAll: true,
+                      decoration: const DropdownDecoration(
+                        backgroundColor: Colors.white,
+                        borderRadius: 12,
+                        borderColor: Color(0xFFE2E8F0),
+                        searchDecoration: DropdownSearchDecoration(
+                          backgroundColor: Color(0xFFF8FAFC),
+                          borderColor: Color(0xFFE2E8F0),
+                          hintText: 'Search languages',
+                        ),
+                        checkboxActiveColor: Color(0xFF0F172A),
+                        maxHeight: 340,
+                      ),
+                      placeholder: 'Select languages',
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Example 3
+                  _ExampleSection(
+                    label: 'Max Selection Limit',
+                    description: 'Limit selections with callback',
+                    child: FlutterMultiDropdown(
+                      items: priorities,
+                      controller: prioritiesController,
+                      maxSelection: 3,
+                      onMaxSelectionReached: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Maximum 3 items allowed'),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
+                      decoration: const DropdownDecoration(
+                        backgroundColor: Colors.white,
+                        borderRadius: 12,
+                        borderColor: Color(0xFFE2E8F0),
+                        checkboxActiveColor: Color(0xFF0F172A),
+                        maxHeight: 280,
+                      ),
+                      placeholder: 'Select up to 3 priorities',
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Example 4
+                  _ExampleSection(
+                    label: 'Compact View',
+                    description: 'Display count instead of names',
+                    child: FlutterMultiDropdown(
+                      items: departments,
+                      controller: departmentsController,
+                      showSelectedItemName: false,
+                      enableSearch: true,
+                      decoration: const DropdownDecoration(
+                        backgroundColor: Colors.white,
+                        borderRadius: 12,
+                        borderColor: Color(0xFFE2E8F0),
+                        searchDecoration: DropdownSearchDecoration(
+                          backgroundColor: Color(0xFFF8FAFC),
+                          borderColor: Color(0xFFE2E8F0),
+                        ),
+                        checkboxActiveColor: Color(0xFF0F172A),
+                        maxHeight: 320,
+                      ),
+                      placeholder: 'Select departments',
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Example 6
+                  _ExampleSection(
+                    label: 'Single Selection',
+                    description: 'Behave like a normal dropdown',
+                    child: FlutterMultiDropdown(
+                      items: currencies,
+                      controller: currenciesController,
+                      selectionMode: DropdownSelectionMode.single,
+                      initialSingleValue: currencies.first,
+                      autoCloseOnItemTap: true,
+                      onSingleItemSelected: (selectedId) {
+                        debugPrint("Selected Id: $selectedId");
+                      },
+                      showSelectAll: false,
+                      decoration: const DropdownDecoration(
+                        backgroundColor: Colors.white,
+                        borderRadius: 12,
+                        borderColor: Color(0xFFE2E8F0),
+                        checkboxActiveColor: Color(0xFF0F172A),
+                        maxHeight: 300,
+                      ),
+                      placeholder: 'Select currency',
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Example 7
+                  _ExampleSection(
+                    label: 'Loading & Empty States',
+                    description: 'Enhanced state builders with animations',
+                    child: Column(
+                      children: [
+                        FlutterMultiDropdown(
+                          items: dynamicItems,
+                          controller: dynamicController,
+                          showLoading: isLoading,
+                          isEmptyData: isEmpty,
+                          loadingBuilder: (context) => Container(
+                            padding: const EdgeInsets.symmetric(vertical: 60),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 3,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.grey[300]!,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Loading items...',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Please wait a moment',
+                                  style: TextStyle(
+                                    color: Colors.grey[400],
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          emptyBuilder: (context) => Container(
+                            padding: const EdgeInsets.symmetric(vertical: 60),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 64,
+                                  height: 64,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.inbox_outlined,
+                                    size: 32,
+                                    color: Colors.grey[400],
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'No items found',
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Try adjusting your filters or check back later',
+                                  style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          decoration: const DropdownDecoration(
+                            backgroundColor: Colors.white,
+                            borderRadius: 12,
+                            borderColor: Color(0xFFE2E8F0),
+                            maxHeight: 300,
+                          ),
+                          placeholder: 'Select items',
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isLoading = true;
+                                    isEmpty = false;
+                                  });
+                                  Future.delayed(const Duration(seconds: 2), () {
+                                    setState(() => isLoading = false);
+                                  });
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Loading'),
                               ),
                             ),
-                          ),
-                          if (!item.enabled)
-                            Icon(Icons.lock_outline,
-                                size: 16, color: Colors.grey[400]),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-                selectAllBuilder: (context, selectAll, onChanged) {
-                  return InkWell(
-                    onTap: () => onChanged!(!selectAll),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      child: Row(
-                        children: [
-                          Icon(
-                            selectAll
-                                ? Icons.check_circle
-                                : Icons.circle_outlined,
-                            color: selectAll ? Colors.green : Colors.grey[400],
-                            size: 20,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              "Select All",
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 15,
-                                fontWeight: FontWeight.normal,
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isLoading = false;
+                                    isEmpty = !isEmpty;
+                                  });
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Text(isEmpty ? 'Show' : 'Empty'),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-                onSelectionChanged: (selectedIds) {
-                  debugPrint("Selected Fruits: $selectedIds");
-                },
-                decoration: DropdownDecoration(
-                  backgroundColor: Colors.white,
-                  borderRadius: 12,
-                  borderColor: Colors.grey[300]!,
-                  maxHeight: 250,
-                ),
-                placeholder: 'Choose fruits...',
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Example 2: Tech Stack with Search
-            _buildExampleCard(
-              title: "Choose Your Tech Stack",
-              subtitle: "With search functionality and select all",
-              child: FlutterMultiDropdown(
-                items: techItems,
-                controller: techController,
-                onSelectionChanged: (selectedIds) {
-                  debugPrint("Selected Technologies: $selectedIds");
-                },
-                enableSearch: true,
-                showSelectAll: true,
-                decoration: DropdownDecoration(
-                  backgroundColor: Colors.white,
-                  borderRadius: 12,
-                  borderColor: Colors.blue[200]!,
-                  searchDecoration: DropdownSearchDecoration(
-                    backgroundColor: Colors.blue[50],
-                    borderColor: Colors.blue[200]!,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  maxHeight: 300,
-                ),
-                placeholder: 'Search technologies...',
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Example 3: Color Selection (Compact)
-            _buildExampleCard(
-              title: "Pick Colors",
-              subtitle: "Compact view showing only count",
-              child: FlutterMultiDropdown(
-                items: colorItems,
-                controller: colorController,
-                onSelectionChanged: (selectedIds) {
-                  debugPrint("Selected Colors: $selectedIds");
-                },
-                showSelectedItemName: false,
-                enableSearch: true,
-                decoration: DropdownDecoration(
-                  backgroundColor: Colors.white,
-                  borderRadius: 12,
-                  borderColor: Colors.green[300]!,
-                  searchDecoration: DropdownSearchDecoration(
-                    backgroundColor: Colors.green[50],
-                    borderColor: Colors.green[200]!,
-                  ),
-                  maxHeight: 250,
-                ),
-                placeholder: 'Select colors...',
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Example 4: Dark Theme Categories
-            _buildExampleCard(
-              title: "Product Categories",
-              subtitle: "Dark theme styling",
-              child: FlutterMultiDropdown(
-                items: categoryItems,
-                controller: categoryController,
-                onSelectionChanged: (selectedIds) {
-                  debugPrint("Selected Categories: $selectedIds");
-                },
-                placeholder: 'Browse categories...',
-                decoration: DropdownDecoration(
-                  backgroundColor: Colors.grey[800]!,
-                  borderRadius: 12,
-                  borderColor: Colors.grey[600]!,
-                  openDropdownIconColor: Colors.white,
-                  closeDropdownIconColor: Colors.white,
-                  placeholderTextStyle: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 15,
-                  ),
-                  selectedItemTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  itemTextStyle: const TextStyle(
-                    color: Colors.white,
-                  ),
-                  checkboxActiveColor: Colors.blue[400]!,
-                  checkboxInActiveColor: Colors.grey[400]!,
-                  checkColor: Colors.white,
-                  maxHeight: 250,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Example 5: Skills with Controls
-            _buildExampleCard(
-              title: "Your Skills",
-              subtitle: "With programmatic controls",
-              child: Column(
-                children: [
-                  FlutterMultiDropdown(
-                    items: skillItems,
-                    controller: skillController,
-                    onSelectionChanged: (selectedIds) {
-                      debugPrint("Selected Skills: $selectedIds");
-                    },
-                    decoration: DropdownDecoration(
-                      backgroundColor: Colors.white,
-                      borderRadius: 12,
-                      borderColor: Colors.purple[300]!,
-                      maxHeight: 250,
-                    ),
-                    placeholder: 'Select your skills...',
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            skillController.updateSelection([1, 2, 6]);
-                          },
-                          icon: const Icon(Icons.check, size: 18),
-                          label: const Text('Select Core'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.purple[100],
-                            foregroundColor: Colors.purple[700],
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            skillController.clearSelection();
-                          },
-                          icon: const Icon(Icons.clear, size: 18),
-                          label: const Text('Clear All'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.red[600],
-                            side: BorderSide(color: Colors.red[300]!),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ],
+
+                  const SizedBox(height: 24),
+
+                  // Example 8
+                  _ExampleSection(
+                    label: 'Programmatic Control',
+                    description: 'Control via controller methods',
+                    child: Column(
+                      children: [
+                        FlutterMultiDropdown(
+                          items: skills,
+                          controller: skillsController,
+                          decoration: const DropdownDecoration(
+                            backgroundColor: Colors.white,
+                            borderRadius: 12,
+                            borderColor: Color(0xFFE2E8F0),
+                            checkboxActiveColor: Color(0xFF0F172A),
+                            maxHeight: 300,
+                          ),
+                          placeholder: 'Select skills',
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => skillsController.updateSelection([1, 2]),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Frontend'),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => skillsController.updateSelection([3, 5, 6]),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Backend'),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => skillsController.clearSelection(),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Color(0xFFE2E8F0)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Clear'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 48),
+                ]),
               ),
             ),
           ],
@@ -362,51 +594,44 @@ class _DropDownExampleState extends State<DropDownExample> {
       ),
     );
   }
+}
 
-  Widget _buildExampleCard({
-    required String title,
-    required String subtitle,
-    required Widget child,
-  }) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+class _ExampleSection extends StatelessWidget {
+  final String label;
+  final String description;
+  final Widget child;
+
+  const _ExampleSection({
+    required this.label,
+    required this.description,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF0F172A),
+            letterSpacing: -0.3,
           ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 20),
-            child,
-          ],
         ),
-      ),
+        const SizedBox(height: 4),
+        Text(
+          description,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Color(0xFF64748B),
+          ),
+        ),
+        const SizedBox(height: 12),
+        child,
+      ],
     );
   }
 }

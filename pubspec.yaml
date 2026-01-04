@@ -1,10 +1,15 @@
 name: flutter_multi_dropdown
-description: 'Flutter multi-select dropdown with checkboxes and built-in "Select All" option with search functionality.'
-version: 0.0.6
+description: >
+  A Flutter dropdown widget with both single and multi-select capabilities.
+  Features include checkboxes/radio buttons, search, debounce search,
+  selection limit, built-in Select All support, and customizable UI.
+  Ideal for forms, filters, and selection interfaces.
+version: 1.0.0
 homepage: https://github.com/NamanGajera/flutter_multi_dropdown
 topics:
   - dropdown
   - multi-select
+  - single-select
   - flutter-widget
   - selection
   - search
@@ -24,4 +29,4 @@ dev_dependencies:
 
 screenshots:
   - description: "Example screenshot 1"
-    path: Images/Screenshot_1.jpg
+    path: Images/custom_item_builder_dropdown.png

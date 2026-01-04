@@ -3,19 +3,22 @@
 [![Pub Version](https://img.shields.io/pub/v/flutter_multi_dropdown)](https://pub.dev/packages/flutter_multi_dropdown)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A highly customizable multi-select dropdown widget for Flutter with select-all functionality, type safety, and comprehensive decoration options.
+A Flutter dropdown widget with both single and multi-select capabilities. Features include checkboxes/radio buttons, search, debounce search, selection limit, built-in Select All support, and customizable UI. Ideal for forms, filters, and selection interfaces.
 
 ## ✨ Features
 
-- **Multi-Selection Support** - Intuitive interface for selecting multiple items
-- **Search Functionality** - Built-in search to quickly find items in large lists
-- **Select All Option** - Built-in "Select All" functionality with customizable text
-- **Full UI Control** – Customize every part with itemBuilder & selectAllBuilder!
-- **Disabled Items** – Mark items as non-selectable via DropDownMenuItemData.
-- **Visual Feedback** - Clear checkbox indicators for selection state
-- **Type Safety** - Generic implementation works with any data type
-- **Programmatic Control** - Full control via `MultiDropdownController`
-- **Customizable UI** - Extensive decoration options for complete visual control
+- **Multi-Selection Support** - Intuitive interface for selecting multiple items (can also be used as single select).
+- **Search Functionality** - Built-in search to quickly find items in large lists.
+- **Select All Option** - Built-in "Select All" functionality with customizable text.
+- **Selection Limit** - Restrict the number of selectable items with `maxSelection`.
+- **Max Selection Callback** - Handle user feedback when the selection limit is reached via `onMaxSelectionReached`.
+- **Empty & Loading States** - Fully customizable UI for empty lists and loading scenarios.
+- **Full UI Control** – Customize every part with `itemBuilder` & `selectAllBuilder`.
+- **Disabled Items** – Mark items as non-selectable via `DropDownMenuItemData`.
+- **Visual Feedback** - Clear checkbox indicators for selection state.
+- **Type Safety** - Generic implementation works with any data type.
+- **Programmatic Control** - Full control via `MultiDropdownController`.
+- **Customizable UI** - Extensive decoration options for complete visual control.
 
 ## 📸 Screenshots & Demo
 
@@ -65,26 +68,30 @@ FlutterMultiDropdown<int>(
 
 ### Widget Properties
 
-| Property               | Description                                          | Type                             | Default          |
-| ---------------------- | ---------------------------------------------------- | -------------------------------- | ---------------- |
-| `items`                | List of selectable items                             | `List<DropDownMenuItemData<T>>`  | **Required**     |
-| `onSelectionChanged`   | Callback when selection changes                      | `Function(List<T>)?`             | `null`           |
-| `placeholder`          | Placeholder text                                     | `String?`                        | `'Select Items'` |
-| `selectAllText`        | "Select All" option text                             | `String?`                        | `'Select All'`   |
-| `itemBuilder`          | Custom item widget builder                           | `Widget?`                        | `null`           |
-| `selectAllBuilder`     | Custom select all widget builder                     | `Widget?`                        | `null`           |
-| `prefix`               | Widget before selected items                         | `Widget?`                        | `null`           |
-| `suffix`               | Widget after selected items                          | `Widget?`                        | `null`           |
-| `initialValue`         | Initially selected values                            | `List<T>?`                       | `null`           |
-| `controller`           | Programmatic control                                 | `MultiDropdownController<T>?`    | `null`           |
-| `showSelectedItemName` | Show names vs count                                  | `bool`                           | `true`           |
-| `showSelectAll`        | Show select all option                               | `bool`                           | `true`           |
-| `enableSearch`         | Enable search functionality                          | `bool?`                          | `false`          |
-| `isEmptyData`          | Show names vs count                                  | `bool`                           | `fase`           |
-| `showLoading`          | Show loading indicator                               | `bool`                           | `false`          |
-| `loadingBuilder`       | Custom loading widget builder                        | `Widget Function(BuildContext)?` | `null`           |
-| `emptyBuilder`         | Custom empty state widget builder                    | `Widget Function(BuildContext)?` | `null`           |
-| `autoCloseOnItemTap`   | control dropdown close behavior after item selection | `bool`                           | `false`          |
+| Property                | Description                                          | Type                             | Default          |
+| ----------------------- | ---------------------------------------------------- | -------------------------------- | ---------------- |
+| `items`                 | List of selectable items                             | `List<DropDownMenuItemData<T>>`  | **Required**     |
+| `onSelectionChanged`    | Callback when selection changes                      | `Function(List<T>)?`             | `null`           |
+| `placeholder`           | Placeholder text                                     | `String?`                        | `'Select Items'` |
+| `selectAllText`         | "Select All" option text                             | `String?`                        | `'Select All'`   |
+| `itemBuilder`           | Custom item widget builder                           | `Widget?`                        | `null`           |
+| `selectAllBuilder`      | Custom select all widget builder                     | `Widget?`                        | `null`           |
+| `prefix`                | Widget before selected items                         | `Widget?`                        | `null`           |
+| `suffix`                | Widget after selected items                          | `Widget?`                        | `null`           |
+| `initialValue`          | Initially selected values                            | `List<T>?`                       | `null`           |
+| `controller`            | Programmatic control                                 | `MultiDropdownController<T>?`    | `null`           |
+| `showSelectedItemName`  | Show names vs count                                  | `bool`                           | `true`           |
+| `showSelectAll`         | Show select all option                               | `bool`                           | `true`           |
+| `enableSearch`          | Enable search functionality                          | `bool?`                          | `false`          |
+| `isEmptyData`           | Show names vs count                                  | `bool`                           | `fase`           |
+| `showLoading`           | Show loading indicator                               | `bool`                           | `false`          |
+| `loadingBuilder`        | Custom loading widget builder                        | `Widget Function(BuildContext)?` | `null`           |
+| `emptyBuilder`          | Custom empty state widget builder                    | `Widget Function(BuildContext)?` | `null`           |
+| `autoCloseOnItemTap`    | control dropdown close behavior after item selection | `bool`                           | `false`          |
+| `maxSelection`          | Limit maximum selections                             | `int?`                           | `null`           |
+| `onMaxSelectionReached` | Limit maximum selections                             | `Function?`                      | `null`           |
+| `initialSingleValue`    | Initial single selected value                        | `dynamic?`                       | `null`           |
+| `selectionMode`         | Selection mode (single or multiple)                  | `DropdownSelectionMode`          | `single`         |
 
 ### Decoration Properties
 
