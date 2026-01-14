@@ -1,4 +1,17 @@
 /// A generic model class to represent an item in a custom dropdown menu.
+///
+/// This class encapsulates all properties needed for a dropdown item,
+/// including its display name, unique identifier, and selection state.
+///
+/// Example:
+/// ```dart
+/// DropDownMenuItemData<int>(
+///   name: 'Item 1',
+///   id: 1,
+///   isSelected: false,
+///   enabled: true,
+/// )
+/// ```
 class DropDownMenuItemData<T> {
   /// The display name of the dropdown item shown to the user.
   final String name;
@@ -30,13 +43,30 @@ class DropDownMenuItemData<T> {
     this.enabled = true,
   });
 
+  /// Creates a copy of this item with updated properties.
+  ///
+  /// Useful for immutability patterns and state updates.
+  DropDownMenuItemData<T> copyWith({
+    String? name,
+    T? id,
+    bool? isSelected,
+    bool? enabled,
+  }) {
+    return DropDownMenuItemData<T>(
+      name: name ?? this.name,
+      id: id ?? this.id,
+      isSelected: isSelected ?? this.isSelected,
+      enabled: enabled ?? this.enabled,
+    );
+  }
+
   /// Compares two [DropDownMenuItemData] objects for equality.
   ///
   /// Returns `true` if all properties ([name], [id], [isSelected], and [enabled]) are equal.
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DropDownMenuItemData &&
+      other is DropDownMenuItemData<T> &&
           runtimeType == other.runtimeType &&
           name == other.name &&
           id == other.id &&
@@ -45,6 +75,10 @@ class DropDownMenuItemData<T> {
 
   /// Returns a hash code based on the properties of the object.
   @override
-  int get hashCode =>
-      name.hashCode ^ id.hashCode ^ isSelected.hashCode ^ enabled.hashCode;
+  int get hashCode => name.hashCode ^ id.hashCode ^ isSelected.hashCode ^ enabled.hashCode;
+
+  @override
+  String toString() {
+    return 'DropDownMenuItemData{name: $name, id: $id, isSelected: $isSelected, enabled: $enabled}';
+  }
 }

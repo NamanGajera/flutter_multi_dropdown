@@ -55,6 +55,7 @@ final MultiDropdownController dropdownController = MultiDropdownController();
 
 FlutterMultiDropdown<int>(
   controller: dropdownController,
+  selectionMode: DropdownSelectionMode.multiple,
   items: const [
     DropDownMenuItemData(name: 'Option 1', id: 1),
     DropDownMenuItemData(name: 'Option 2', id: 2),
@@ -85,7 +86,7 @@ FlutterMultiDropdown<int>(
 | `showSelectedItemName`  | Show names vs count                                  | `bool`                           | `true`           |
 | `showSelectAll`         | Show select all option                               | `bool`                           | `true`           |
 | `enableSearch`          | Enable search functionality                          | `bool?`                          | `false`          |
-| `isEmptyData`           | Show names vs count                                  | `bool`                           | `fase`           |
+| `isEmptyData`           | Show names vs count                                  | `bool`                           | `false`          |
 | `showLoading`           | Show loading indicator                               | `bool`                           | `false`          |
 | `loadingBuilder`        | Custom loading widget builder                        | `Widget Function(BuildContext)?` | `null`           |
 | `emptyBuilder`          | Custom empty state widget builder                    | `Widget Function(BuildContext)?` | `null`           |
@@ -102,25 +103,29 @@ decoration: DropdownDecoration(
   borderRadius: 10,
   borderColor: Colors.blue,
   checkboxActiveColor: Colors.blueAccent,
+  maxVisibleItems: 6,
   // See all options below
 )
 ```
 
-| Property                 | Description               | Type                       | Default                                              |
-| ------------------------ | ------------------------- | -------------------------- | ---------------------------------------------------- |
-| `borderRadius`           | Border radius             | `double`                   | `6.0`                                                |
-| `borderColor`            | Border color              | `Color`                    | `Colors.grey`                                        |
-| `backgroundColor`        | Background color          | `Color`                    | `Colors.white`                                       |
-| `contentPadding`         | Internal padding          | `EdgeInsets`               | `EdgeInsets.symmetric(horizontal: 16, vertical: 12)` |
-| `elevation`              | Dropdown elevation        | `double`                   | `4.0`                                                |
-| `maxHeight`              | Max dropdown height       | `double`                   | `260`                                                |
-| `checkboxActiveColor`    | Active checkbox color     | `Color?`                   | Theme primary                                        |
-| `checkboxInActiveColor`  | Inactive checkbox color   | `Color?`                   | `Colors.black`                                       |
-| `closeDropdownIcon`      | Custom close icon         | `Widget?`                  | `null`                                               |
-| `closeDropdownIconColor` | Close Dropdown icon color | `Color?`                   | `Colors.grey`                                        |
-| `openDropdownIcon`       | Custom open icon          | `Widget?`                  | `null`                                               |
-| `openDropdownIconColor`  | Open Dropdown icon color  | `Color?`                   | `Colors.grey`                                        |
-| `searchDecoration`       | Search filed decoration   | `DropdownSearchDecoration` | `null`                                               |
+| Property                 | Description                                          | Type                       | Default                                              |
+| ------------------------ | ---------------------------------------------------- | -------------------------- | ---------------------------------------------------- |
+| `borderRadius`           | Border radius                                        | `double`                   | `6.0`                                                |
+| `borderColor`            | Border color                                         | `Color`                    | `Colors.grey`                                        |
+| `backgroundColor`        | Background color                                     | `Color`                    | `Colors.white`                                       |
+| `contentPadding`         | Internal padding                                     | `EdgeInsets`               | `EdgeInsets.symmetric(horizontal: 16, vertical: 12)` |
+| `elevation`              | Dropdown elevation                                   | `double`                   | `4.0`                                                |
+| `maxHeight`              | Max dropdown height                                  | `double`                   | `260`                                                |
+| `checkboxActiveColor`    | Active checkbox color                                | `Color?`                   | Theme primary                                        |
+| `checkboxInActiveColor`  | Inactive checkbox color                              | `Color?`                   | `Colors.black`                                       |
+| `closeDropdownIcon`      | Custom close icon                                    | `Widget?`                  | `null`                                               |
+| `closeDropdownIconColor` | Close Dropdown icon color                            | `Color?`                   | `Colors.grey`                                        |
+| `openDropdownIcon`       | Custom open icon                                     | `Widget?`                  | `null`                                               |
+| `openDropdownIconColor`  | Open Dropdown icon color                             | `Color?`                   | `Colors.grey`                                        |
+| `searchDecoration`       | Search filed decoration                              | `DropdownSearchDecoration` | `null`                                               |
+| `maxVisibleItems`        | Maximum number of visible items in the dropdown list | `int`                      | `6`                                                  |
+| `itemHeight`             | Height of each dropdown item in pixels               | `double`                   | `48.0`                                               |
+| `minHeight`              | Minimum height of the dropdown list in pixels        | `double`                   | `100.0`                                              |
 
 ## 🎛️ Controller Methods
 
@@ -135,7 +140,7 @@ controller.updateSelection([1, 2, 3]);
 controller.clearSelection();
 ```
 
-## 🎨 Complete Example
+## 🎨 Complete Multi Dropdown Example
 
 ```dart
 final MultiDropdownController fruitsController = MultiDropdownController();
@@ -228,8 +233,49 @@ final List<DropDownMenuItemData> fruitsItems = [
     placeholder: 'Choose fruits...',
 ),
 
+
+
+```
+
+## 🎨 Complete Single Dropdown Example
+
+```dart
+final MultiDropdownController currenciesController =
+    MultiDropdownController();
+
+final List<DropDownMenuItemData> currencies = [
+  DropDownMenuItemData(name: "US Dollar (USD)", id: 1, isSelected: true),
+  DropDownMenuItemData(name: "Euro (EUR)", id: 2),
+  DropDownMenuItemData(name: "British Pound (GBP)", id: 3, enabled: false),
+  DropDownMenuItemData(name: "Japanese Yen (JPY)", id: 4),
+  DropDownMenuItemData(name: "Swiss Franc (CHF)", id: 5),
+  DropDownMenuItemData(name: "Canadian Dollar (CAD)", id: 6, enabled: false),
+];
+
+FlutterMultiDropdown(
+  items: currencies,
+  controller: currenciesController,
+  selectionMode: DropdownSelectionMode.single,
+  initialSingleValue: currencies.first,
+  autoCloseOnItemTap: true,
+  onSingleItemSelected: (selectedId) {
+    debugPrint("Selected Id: $selectedId");
+  },
+  showSelectAll: false,
+  decoration: const DropdownDecoration(
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    borderColor: Color(0xFFE2E8F0),
+    checkboxActiveColor: Color(0xFF0F172A),
+  ),
+  placeholder: 'Select currency',
+);
+
+```
+
 ```
 
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```

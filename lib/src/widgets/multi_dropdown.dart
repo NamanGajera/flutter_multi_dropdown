@@ -1,38 +1,79 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_dropdown/src/dropdown_search_field.dart';
-import 'dropdown_decoration.dart';
-import 'dropdown_menu_item.dart';
-import 'multi_dropdown_controller.dart';
-
-/// Selection mode for the dropdown
-enum DropdownSelectionMode {
-  /// Single item selection (like normal dropdown)
-  single,
-
-  /// Multiple item selection
-  multiple,
-}
+import '../core/dropdown_item.dart';
+import '../core/multi_dropdown_controller.dart';
+import '../themes/dropdown_decoration.dart';
+import '../utils/dropdown_selection_mode.dart';
+import '../utils/dropdown_helpers.dart';
+import 'dropdown_search_field.dart';
 
 /// A customizable dropdown widget for Flutter applications that supports both single and multi-select.
 ///
 /// Features include:
-/// - Single or multiple item selection
+/// - Single or multiple item selection modes
 /// - "Select All" functionality (for multi-select only)
-/// - Customizable appearance
+/// - Customizable appearance through [DropdownDecoration]
 /// - Controller support for programmatic control
 /// - Callbacks for selection changes
-/// - Loading and empty states
+/// - Loading and empty states with custom builders
 /// - Search functionality
+/// - API data integration with proper selection synchronization
+///
+/// ## Usage
+///
+/// ### Basic Usage
+/// ```dart
+/// FlutterMultiDropdown<int>(
+///   items: [
+///     DropDownMenuItemData(name: 'Item 1', id: 1),
+///     DropDownMenuItemData(name: 'Item 2', id: 2),
+///   ],
+///   onSelectionChanged: (selectedIds) {
+///     print('Selected IDs: $selectedIds');
+///   },
+/// )
+/// ```
+///
+/// ### With API Data
+/// ```dart
+/// // Initialize controller before data loads
+/// final controller = MultiDropdownController<int>();
+///
+/// // When API data arrives
+/// Future<void> loadData() async {
+///   final data = await api.getItems();
+///   final items = data.map((item) =>
+///     DropDownMenuItemData(name: item.name, id: item.id)
+///   ).toList();
+///
+///   // Update dropdown items
+///   setState(() {
+///     _items = items;
+///   });
+///
+///   // Controller will automatically select items
+///   // that were selected before data loaded
+/// }
+///
+/// // In build method
+/// FlutterMultiDropdown<int>(
+///   items: _items,
+///   controller: controller,
+/// )
+/// ```
+///
+/// See also:
+/// - [MultiDropdownController] for programmatic control
+/// - [DropdownDecoration] for styling options
+/// - [DropDownMenuItemData] for item configuration
 class FlutterMultiDropdown<T> extends StatefulWidget {
   /// List of items to display in the dropdown
   final List<DropDownMenuItemData<T>> items;
 
-  /// Callback when selection changes
-  final Function(List<T>)? onSelectionChanged;
+  /// Callback when selection changes (for multi-select mode)
+  final ValueChanged<List<T>>? onSelectionChanged;
 
   /// Callback when single item is selected (only in single selection mode)
-  final Function(T)? onSingleItemSelected;
+  final ValueChanged<T>? onSingleItemSelected;
 
   /// Decoration options for styling
   final DropdownDecoration decoration;
@@ -49,7 +90,7 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
   /// Widget to display after the selected items text
   final Widget? suffix;
 
-  /// Initial selected values
+  /// Initial selected values (for multi-select mode)
   final List<T>? initialValue;
 
   /// Initial single selected value (for single selection mode)
@@ -63,6 +104,9 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
 
   /// Whether to enable search functionality
   final bool enableSearch;
+
+  /// Custom search controller (optional)
+  final SearchController? searchController;
 
   /// Whether to display empty state (overrides actual empty state)
   final bool isEmptyData;
@@ -83,7 +127,7 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
   final int? maxSelection;
 
   /// Optional callback that triggers when the user tries to select more items than the limit
-  final Function()? onMaxSelectionReached;
+  final VoidCallback? onMaxSelectionReached;
 
   /// Builder function for empty state
   ///
@@ -93,7 +137,7 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
   ///   return Center(child: Text('No items available'));
   /// }
   /// ```
-  final Widget Function(BuildContext context)? emptyBuilder;
+  final WidgetBuilder? emptyBuilder;
 
   /// Builder function for loading state
   ///
@@ -103,7 +147,7 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
   ///   return Center(child: CircularProgressIndicator());
   /// }
   /// ```
-  final Widget Function(BuildContext context)? loadingBuilder;
+  final WidgetBuilder? loadingBuilder;
 
   /// Builder function for custom item widgets
   ///
@@ -121,23 +165,25 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
     BuildContext context,
     DropDownMenuItemData<T> item,
     bool isSelected,
-    Function(bool)? onChanged,
+    ValueChanged<bool?>? onChanged,
   )? itemBuilder;
 
   /// Builder function for custom select all widget (only for multi-select mode)
   ///
   /// Example:
   /// ```dart
-  /// selectAllBuilder: (context, item, isSelected, onChanged) {
-  ///   return Row(
-  ///     onTap: () => onChanged(!isSelected),
+  /// selectAllBuilder: (context, isSelected, onChanged) {
+  ///   return CheckboxListTile(
+  ///     title: Text('Select All'),
+  ///     value: isSelected,
+  ///     onChanged: onChanged,
   ///   );
   /// }
   /// ```
   final Widget Function(
     BuildContext context,
-    bool selectAll,
-    Function(bool)? onChanged,
+    bool isSelected,
+    ValueChanged<bool?>? onChanged,
   )? selectAllBuilder;
 
   /// Creates a [FlutterMultiDropdown] widget
@@ -156,6 +202,7 @@ class FlutterMultiDropdown<T> extends StatefulWidget {
     this.controller,
     this.showSelectedItemName = true,
     this.enableSearch = false,
+    this.searchController,
     this.emptyBuilder,
     this.loadingBuilder,
     this.isEmptyData = false,
@@ -188,23 +235,32 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
   late MultiDropdownController<T> _internalController;
   late List<DropDownMenuItemData<T>> _currentItems;
   final List<DropDownMenuItemData<T>> _selectedItems = [];
-  final SearchController _searchController = SearchController();
+  late SearchController _searchController;
 
+  /// Gets the effective controller (external or internal)
   MultiDropdownController<T> get _effectiveController => widget.controller ?? _internalController;
 
   @override
   void initState() {
     super.initState();
     _initializeController();
+    _initializeSearchController();
     _initializeItems();
     _setupInitialSelection();
   }
 
+  /// Initializes the controller (external or internal)
   void _initializeController() {
     _internalController = MultiDropdownController<T>();
     _effectiveController.addListener(_handleControllerChange);
   }
 
+  /// Initializes the search controller
+  void _initializeSearchController() {
+    _searchController = widget.searchController ?? SearchController();
+  }
+
+  /// Initializes the items list from widget items
   void _initializeItems() {
     _currentItems = widget.items
         .map((item) => DropDownMenuItemData<T>(
@@ -216,6 +272,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
         .toList();
   }
 
+  /// Sets up initial selection based on controller, initial values, or pre-selected items
   void _setupInitialSelection() {
     if (widget.selectionMode == DropdownSelectionMode.multiple) {
       // Multi-select initialization
@@ -242,15 +299,15 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
         final id = widget.controller!.selectedIds.first;
         _selectSingleItem(id);
       } else if (widget.initialSingleValue != null) {
-        _selectSingleItem(widget.initialSingleValue!);
-        _effectiveController.updateSelection([widget.initialSingleValue!]);
+        _selectSingleItem(widget.initialSingleValue as T);
+        _effectiveController.updateSelection([widget.initialSingleValue as T]);
       } else {
         // Handle items that come pre-selected (isSelected: true)
         final preSelectedItem = _currentItems.firstWhere(
           (item) => item.isSelected && item.enabled,
           orElse: () => DropDownMenuItemData<T>(
             name: '',
-            id: _currentItems.firstOrNull?.id ?? (null as T),
+            id: _currentItems.isNotEmpty ? _currentItems.first.id : (null as T),
             isSelected: false,
             enabled: false,
           ),
@@ -278,6 +335,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     }
   }
 
+  /// Updates controller listener when widget controller changes
   void _updateControllerListener(FlutterMultiDropdown<T> oldWidget) {
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller?.removeListener(_handleControllerChange);
@@ -285,30 +343,44 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     }
   }
 
+  /// Updates items list when widget items change (e.g., from API)
   void _updateItemsIfChanged(FlutterMultiDropdown<T> oldWidget) {
-    if (!listEquals(widget.items, oldWidget.items)) {
-      final selectedIds = _currentItems.where((item) => item.isSelected).map((item) => item.id).toList();
-
-      _currentItems = widget.items
-          .map((item) => DropDownMenuItemData<T>(
-                name: item.name,
-                id: item.id,
-                isSelected: selectedIds.contains(item.id),
-                enabled: item.enabled,
-              ))
-          .toList();
+    if (!DropdownHelpers.listEquals(widget.items, oldWidget.items)) {
+      _syncItemsWithController();
     }
   }
 
+  /// Synchronizes dropdown items with controller selections
+  /// This fixes the API data + pre-selection issue
+  void _syncItemsWithController() {
+    final selectedIds = _effectiveController.selectedIds;
+
+    // Update current items while preserving selections from controller
+    _currentItems = widget.items.map((item) {
+      final isSelected = selectedIds.contains(item.id);
+      return item.copyWith(isSelected: isSelected);
+    }).toList();
+
+    // Update UI if needed
+    if (mounted) {
+      setState(() {
+        _selectedItems.clear();
+        _selectedItems.addAll(_currentItems.where((item) => item.isSelected && item.enabled));
+        _updateSelectAllState();
+      });
+    }
+  }
+
+  /// Handles controller changes (when selection is updated programmatically)
   void _handleControllerChange() {
     if (widget.selectionMode == DropdownSelectionMode.multiple) {
-      if (!listEquals(_getSelectedIds(), _effectiveController.selectedIds)) {
+      if (!DropdownHelpers.listEquals(_getSelectedIds(), _effectiveController.selectedIds)) {
         _updateSelectionFromIds(_effectiveController.selectedIds);
       }
     } else {
       // Single selection mode
-      final currentSelectedId = _getSelectedIds().firstOrNull;
-      final controllerSelectedId = _effectiveController.selectedIds.firstOrNull;
+      final currentSelectedId = DropdownHelpers.firstOrNull(_getSelectedIds());
+      final controllerSelectedId = DropdownHelpers.firstOrNull(_effectiveController.selectedIds);
 
       if (currentSelectedId != controllerSelectedId) {
         if (controllerSelectedId != null) {
@@ -321,6 +393,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     }
   }
 
+  /// Gets the list of selected item IDs
   List<T> _getSelectedIds() {
     return _currentItems
         .where((item) => item.isSelected && item.enabled) // Only enabled items
@@ -328,6 +401,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
         .toList();
   }
 
+  /// Updates selection based on a list of IDs
   void _updateSelectionFromIds(List<T> selectedIds) {
     setState(() {
       for (var item in _currentItems) {
@@ -339,7 +413,15 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
       _selectedItems.clear();
       // Add items in the order they appear in selectedIds (for initial values)
       for (var id in selectedIds) {
-        final item = _currentItems.firstWhere((item) => item.id == id);
+        final item = _currentItems.firstWhere(
+          (item) => item.id == id,
+          orElse: () => DropDownMenuItemData<T>(
+            name: '',
+            id: id,
+            isSelected: false,
+            enabled: false,
+          ),
+        );
         if (item.enabled) {
           // Only add enabled items to selection
           item.isSelected = true;
@@ -350,6 +432,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     });
   }
 
+  /// Selects a single item by ID
   void _selectSingleItem(T id) {
     setState(() {
       // Clear all selections first
@@ -358,26 +441,23 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
       }
 
       // Select the specified item if it exists and is enabled
-      final item = _currentItems.firstWhere(
-        (item) => item.id == id && item.enabled,
-        orElse: () => DropDownMenuItemData<T>(
-          name: '',
-          id: id,
-          isSelected: false,
-          enabled: false,
-        ),
-      );
-
-      if (item.enabled) {
-        item.isSelected = true;
-        _selectedItems.clear();
-        _selectedItems.add(item);
+      final itemIndex = _currentItems.indexWhere((item) => item.id == id);
+      if (itemIndex != -1) {
+        final item = _currentItems[itemIndex];
+        if (item.enabled) {
+          item.isSelected = true;
+          _selectedItems.clear();
+          _selectedItems.add(item);
+        } else {
+          _selectedItems.clear();
+        }
       } else {
         _selectedItems.clear();
       }
     });
   }
 
+  /// Clears single selection
   void _clearSingleSelection() {
     setState(() {
       for (var item in _currentItems) {
@@ -387,6 +467,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     });
   }
 
+  /// Updates the select all checkbox state
   void _updateSelectAllState() {
     // Only update select all for multi-select mode
     if (widget.selectionMode != DropdownSelectionMode.multiple) return;
@@ -410,6 +491,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     });
   }
 
+  /// Toggles the select all checkbox
   void _toggleSelectAll(bool? value) {
     if (widget.selectionMode != DropdownSelectionMode.multiple) return;
 
@@ -458,17 +540,20 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     }
   }
 
+  /// Hides the dropdown overlay
   void _hideDropdown() {
     _notifySelectionChanged();
     _removeOverlay();
     setState(() => _isDropdownOpen = false);
   }
 
+  /// Shows the dropdown overlay
   void _showDropdown() {
     _removeOverlay();
     _createAndShowOverlay();
   }
 
+  /// Creates and shows the overlay
   void _createAndShowOverlay() {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
@@ -481,7 +566,10 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     setState(() => _isDropdownOpen = true);
   }
 
+  /// Builds the dropdown overlay widget
   Widget _buildDropdownOverlay(BuildContext context, Size size) {
+    final dropdownHeight = _calculateDropdownHeight();
+
     return Stack(
       children: [
         Positioned.fill(
@@ -492,11 +580,11 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
         ),
         Positioned(
           width: size.width,
-          height: widget.decoration.maxHeight,
+          height: dropdownHeight, // Use dynamic height
           child: CompositedTransformFollower(
             link: _layerLink,
             showWhenUnlinked: false,
-            offset: _calculateDropdownOffset(size),
+            offset: _calculateDropdownOffset(size, dropdownHeight), // Pass height
             child: Material(
               elevation: widget.decoration.elevation,
               borderRadius: BorderRadius.circular(widget.decoration.borderRadius),
@@ -508,28 +596,9 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                       BoxDecoration(
                         color: widget.decoration.backgroundColor,
                         border: Border.all(color: widget.decoration.borderColor),
-                        borderRadius: BorderRadius.circular(
-                          widget.decoration.borderRadius,
-                        ),
+                        borderRadius: BorderRadius.circular(widget.decoration.borderRadius),
                       ),
-                  child: StatefulBuilder(
-                    builder: (context, changeState) {
-                      return SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (widget.enableSearch) _buildSearchField(changeState),
-                            if (widget.showSelectAll && widget.selectionMode == DropdownSelectionMode.multiple)
-                              _buildSelectAllOption(context, changeState),
-                            if (widget.showSelectAll && widget.selectionMode == DropdownSelectionMode.multiple) const Divider(height: 1),
-                            if (widget.showLoading) _buildLoadingState(context),
-                            if ((_currentItems.isEmpty || widget.isEmptyData) && !widget.showLoading) _buildEmptyState(context),
-                            if (_currentItems.isNotEmpty && !widget.isEmptyData && !widget.showLoading) ..._buildItemList(context, changeState),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                  child: _buildDropdownContent(dropdownHeight), // New method
                 ),
               ),
             ),
@@ -539,11 +608,33 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     );
   }
 
-  Offset _calculateDropdownOffset(Size size) {
+  /// Builds the dropdown content with proper constraints
+  Widget _buildDropdownContent(double dropdownHeight) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: dropdownHeight,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.enableSearch) _buildSearchField((_) {}),
+            if (widget.showSelectAll && widget.selectionMode == DropdownSelectionMode.multiple) _buildSelectAllOption(context, (_) {}),
+            if (widget.showSelectAll && widget.selectionMode == DropdownSelectionMode.multiple) const Divider(height: 1),
+            if (widget.showLoading) _buildLoadingState(context),
+            if ((_currentItems.isEmpty || widget.isEmptyData) && !widget.showLoading) _buildEmptyState(context),
+            if (_currentItems.isNotEmpty && !widget.isEmptyData && !widget.showLoading) ..._buildItemList(context, (_) {}),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Calculates the dropdown offset position
+  Offset _calculateDropdownOffset(Size size, double dropdownHeight) {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final position = renderBox.localToGlobal(Offset.zero);
     final screenHeight = MediaQuery.of(context).size.height;
-    final dropdownHeight = widget.decoration.maxHeight;
 
     // Check if there's enough space below the widget
     final spaceBelow = screenHeight - position.dy - size.height;
@@ -558,76 +649,114 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     return Offset(0.0, size.height + 5.0);
   }
 
-  Widget _buildSearchField(void Function(void Function()) changeState) {
+  /// Calculates the dynamic height for the dropdown overlay
+  double _calculateDropdownHeight() {
+    final displayItemCount = _getDisplayItemCount();
+
+    return DropdownHelpers.calculateDropdownHeight(
+      itemCount: displayItemCount,
+      maxVisibleItems: widget.decoration.maxVisibleItems,
+      itemHeight: widget.decoration.itemHeight,
+      minHeight: widget.decoration.minHeight,
+      hasSearch: widget.enableSearch,
+      hasSelectAll: widget.showSelectAll && widget.selectionMode == DropdownSelectionMode.multiple,
+      isLoading: widget.showLoading,
+      isEmpty: _currentItems.isEmpty || widget.isEmptyData,
+    );
+  }
+
+  /// Gets the count of items to display (considering search filter)
+  int _getDisplayItemCount() {
+    if (_searchController.text.trim().isEmpty) {
+      return _currentItems.length;
+    }
+
+    return _currentItems.where((item) => item.name.toLowerCase().contains(_searchController.text.trim().toLowerCase())).length;
+  }
+
+  /// Builds the search field widget
+  Widget _buildSearchField(void Function(void Function()) setState) {
     return DropdownSearchField(
       controller: _searchController,
       onChanged: (value) {
-        changeState(() {});
+        setState(() {});
       },
       decoration: widget.decoration.searchDecoration,
     );
   }
 
-  Widget _buildSelectAllOption(BuildContext context, void Function(void Function()) changeState) {
+  /// Builds the select all option widget
+  Widget _buildSelectAllOption(BuildContext context, void Function(void Function()) setState) {
     if (widget.selectAllBuilder != null) {
-      return widget.selectAllBuilder!(
-        context,
-        _selectAll,
-        (value) {
-          if (!widget.isEmptyData && !widget.showLoading) {
-            _toggleSelectAll(value);
-            changeState(() {});
-          }
-        },
+      return SizedBox(
+        height: widget.decoration.itemHeight,
+        child: widget.selectAllBuilder!(
+          context,
+          _selectAll,
+          (value) {
+            if (!widget.isEmptyData && !widget.showLoading) {
+              _toggleSelectAll(value);
+              setState(() {});
+            }
+          },
+        ),
       );
     }
-    return Theme(
-      data: Theme.of(context).copyWith(
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        checkboxTheme: CheckboxThemeData(
-          side: BorderSide(
-            color: widget.decoration.checkboxInActiveColor ?? Colors.black,
-            width: widget.decoration.checkboxBorderWidth,
+
+    return SizedBox(
+      height: widget.decoration.itemHeight,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          checkboxTheme: CheckboxThemeData(
+            side: BorderSide(
+              color: widget.decoration.checkboxInActiveColor ?? const Color(0xFF757575),
+              width: widget.decoration.checkboxBorderWidth,
+            ),
           ),
         ),
-      ),
-      child: CheckboxListTile(
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        title: Text(
-          widget.selectAllText ?? 'Select All',
-          style: widget.decoration.itemTextStyle,
+        child: CheckboxListTile(
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          dense: true,
+          title: Text(
+            widget.selectAllText ?? 'Select All',
+            style: widget.decoration.itemTextStyle,
+          ),
+          checkColor: widget.decoration.checkColor ?? const Color(0xFFFFFFFF),
+          value: _selectAll,
+          onChanged: (value) {
+            if (!widget.isEmptyData && !widget.showLoading) {
+              _toggleSelectAll(value);
+              setState(() {});
+            }
+          },
+          activeColor: widget.decoration.checkboxActiveColor,
+          controlAffinity: ListTileControlAffinity.leading,
         ),
-        checkColor: widget.decoration.checkColor ?? const Color(0xFFFFFFFF),
-        value: _selectAll,
-        onChanged: (value) {
-          if (!widget.isEmptyData && !widget.showLoading) {
-            _toggleSelectAll(value);
-            changeState(() {});
-          }
-        },
-        activeColor: widget.decoration.checkboxActiveColor,
-        controlAffinity: ListTileControlAffinity.leading,
       ),
     );
   }
 
+  /// Builds the loading state widget
   Widget _buildLoadingState(BuildContext context) {
     return widget.loadingBuilder?.call(context) ??
         const Padding(
           padding: EdgeInsets.only(top: 20),
-          child: Text('Loading...'),
+          child: Center(child: CircularProgressIndicator()),
         );
   }
 
+  /// Builds the empty state widget
   Widget _buildEmptyState(BuildContext context) {
     return widget.emptyBuilder?.call(context) ??
         const Padding(
           padding: EdgeInsets.only(top: 20),
-          child: Text('No Data Found'),
+          child: Center(child: Text('No Data Found')),
         );
   }
 
-  List<Widget> _buildItemList(BuildContext context, void Function(void Function()) changeState) {
+  /// Builds the list of item widgets
+  List<Widget> _buildItemList(BuildContext context, void Function(void Function()) setState) {
     // Filter items based on search text
     final displayItems = _searchController.text.trim().isEmpty
         ? _currentItems
@@ -643,73 +772,82 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
       final isEnabled = item.enabled;
 
       if (widget.itemBuilder != null) {
-        return widget.itemBuilder!(
-          context,
-          item,
-          isSelected,
-          isEnabled
-              ? (value) {
-                  _handleItemSelection(item, value, changeState);
-                }
-              : null,
+        return SizedBox(
+          height: widget.decoration.itemHeight,
+          child: widget.itemBuilder!(
+            context,
+            item,
+            isSelected,
+            isEnabled
+                ? (value) {
+                    _handleItemSelection(item, value ?? false, setState);
+                  }
+                : null,
+          ),
         );
       }
 
-      // Default item builder - use Radio for single selection, Checkbox for multi-selection
-      return Theme(
-        data: Theme.of(context).copyWith(
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        child: Opacity(
-          opacity: isEnabled ? 1.0 : 0.5,
-          child: widget.selectionMode == DropdownSelectionMode.single
-              ? RadioListTile<T>(
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  title: Text(
-                    item.name,
-                    style: widget.decoration.itemTextStyle?.copyWith(
-                      color: isEnabled ? (widget.decoration.itemTextStyle?.color ?? Colors.black) : Colors.grey,
+      // Default item builder with consistent height
+      return SizedBox(
+        height: widget.decoration.itemHeight,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: Opacity(
+            opacity: isEnabled ? 1.0 : 0.5,
+            child: widget.selectionMode == DropdownSelectionMode.single
+                ? RadioListTile<T>(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    dense: true,
+                    title: Text(
+                      item.name,
+                      style: widget.decoration.itemTextStyle?.copyWith(
+                        color: isEnabled ? (widget.decoration.itemTextStyle?.color ?? Colors.black) : Colors.grey,
+                      ),
                     ),
-                  ),
-                  value: item.id,
-                  groupValue: _getSelectedIds().firstOrNull,
-                  onChanged: isEnabled
-                      ? (value) {
-                          _handleItemSelection(item, value != null, changeState);
-                        }
-                      : null,
-                  activeColor: widget.decoration.checkboxActiveColor,
-                  controlAffinity: ListTileControlAffinity.leading,
-                )
-              : CheckboxListTile(
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  title: Text(
-                    item.name,
-                    style: widget.decoration.itemTextStyle?.copyWith(
-                      color: isEnabled ? (widget.decoration.itemTextStyle?.color ?? Colors.black) : Colors.grey,
+                    value: item.id,
+                    groupValue: DropdownHelpers.firstOrNull(_getSelectedIds()),
+                    onChanged: isEnabled
+                        ? (value) {
+                            _handleItemSelection(item, value != null, setState);
+                          }
+                        : null,
+                    activeColor: widget.decoration.checkboxActiveColor,
+                    controlAffinity: ListTileControlAffinity.leading,
+                  )
+                : CheckboxListTile(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    dense: true,
+                    title: Text(
+                      item.name,
+                      style: widget.decoration.itemTextStyle?.copyWith(
+                        color: isEnabled ? (widget.decoration.itemTextStyle?.color ?? Colors.black) : Colors.grey,
+                      ),
                     ),
+                    checkColor: widget.decoration.checkColor ?? const Color(0xFFFFFFFF),
+                    value: isSelected,
+                    onChanged: isEnabled
+                        ? (value) {
+                            _handleItemSelection(item, value ?? false, setState);
+                          }
+                        : null,
+                    activeColor: widget.decoration.checkboxActiveColor,
+                    controlAffinity: ListTileControlAffinity.leading,
                   ),
-                  checkColor: widget.decoration.checkColor ?? const Color(0xFFFFFFFF),
-                  value: isSelected,
-                  onChanged: isEnabled
-                      ? (value) {
-                          _handleItemSelection(item, value ?? false, changeState);
-                        }
-                      : null,
-                  activeColor: widget.decoration.checkboxActiveColor,
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
+          ),
         ),
       );
     });
   }
 
-  void _handleItemSelection(DropDownMenuItemData<T> item, bool value, void Function(void Function()) changeState) {
+  /// Handles item selection/deselection
+  void _handleItemSelection(DropDownMenuItemData<T> item, bool value, void Function(void Function()) setState) {
     if (!item.enabled) {
       return;
     }
 
-    changeState(() {
+    setState(() {
       if (widget.selectionMode == DropdownSelectionMode.multiple) {
         // Multi-select logic
         if (value && widget.maxSelection != null) {
@@ -762,11 +900,13 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     }
   }
 
+  /// Removes the overlay entry
   void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
 
+  /// Notifies listeners about selection changes
   void _notifySelectionChanged() {
     final selectedIds = _selectedItems
         .where((item) => item.enabled) // Only include enabled items
@@ -787,9 +927,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
           decoration: widget.decoration.dropdownDecoration ??
               BoxDecoration(
                 border: Border.all(color: widget.decoration.borderColor),
-                borderRadius: BorderRadius.circular(
-                  widget.decoration.borderRadius,
-                ),
+                borderRadius: BorderRadius.circular(widget.decoration.borderRadius),
                 color: widget.decoration.backgroundColor,
               ),
           child: Row(
@@ -814,13 +952,13 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                         Icon(
                           Icons.close,
                           color: widget.decoration.closeDropdownIconColor,
-                          size: widget.decoration.closeDropdownIconSize,
+                          size: widget.decoration.closeDropdownIconSize ?? 20,
                         )
                     : widget.decoration.openDropdownIcon ??
                         Icon(
                           Icons.arrow_drop_down,
                           color: widget.decoration.openDropdownIconColor,
-                          size: widget.decoration.openDropdownIconSize,
+                          size: widget.decoration.openDropdownIconSize ?? 20,
                         ),
               ]
             ],
@@ -830,6 +968,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     );
   }
 
+  /// Gets the display text for the dropdown button
   String _getDisplayText() {
     if (_selectedItems.isEmpty) {
       return widget.placeholder ?? 'Select Items';
@@ -843,9 +982,9 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
     }
   }
 
+  /// Gets the text style for the dropdown button
   TextStyle? _getTextStyle() {
-    final selectedItems = _currentItems.where((item) => item.isSelected).toList();
-    return selectedItems.isEmpty ? widget.decoration.placeholderTextStyle : widget.decoration.selectedItemTextStyle;
+    return _selectedItems.isEmpty ? widget.decoration.placeholderTextStyle : widget.decoration.selectedItemTextStyle;
   }
 
   @override
@@ -855,7 +994,9 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
       _internalController.dispose();
     }
     _removeOverlay();
-    _searchController.dispose();
+    if (widget.searchController == null) {
+      _searchController.dispose();
+    }
     super.dispose();
   }
 }

@@ -1,3 +1,27 @@
+## [1.1.0] - 14-01-2026
+
+## Added
+
+- **Dynamic Height Feature**: Added intelligent height calculation based on item count
+- `maxVisibleItems` property to control how many items are visible without scrolling (default: 6)
+- `estimatedItemHeight` property for initial height estimation (default: 48.0)
+- `minHeight` property to ensure dropdown doesn't become too small (default: 100.0)
+- Automatic height adjustment when items have different heights via custom item builders
+- Responsive scrolling when item count exceeds maxVisibleItems
+
+## Changed
+
+- **BREAKING**: Removed maxHeight property from DropdownDecoration
+- Replaced fixed height dropdown with dynamic height calculation
+- Improved dropdown positioning logic to account for dynamic heights
+- Enhanced performance with optimized rebuilds when content changes
+
+## Fixed
+
+- Better handling of custom item builders with varying heights
+- Improved layout stability when dropdown content changes
+- Fixed potential overflow issues with many items
+
 ## [1.0.0] - 04-01-2026
 
 ### Added

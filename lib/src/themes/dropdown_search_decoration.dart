@@ -4,6 +4,15 @@ import 'package:flutter/material.dart';
 ///
 /// This class provides styling options for the search text field that appears
 /// at the top of the dropdown list.
+///
+/// Example:
+/// ```dart
+/// DropdownSearchDecoration(
+///   hintText: 'Search items...',
+///   backgroundColor: Colors.grey[100],
+///   borderRadius: BorderRadius.circular(8.0),
+/// )
+/// ```
 class DropdownSearchDecoration {
   /// The hint text to display when the search field is empty
   final String? hintText;
@@ -47,8 +56,8 @@ class DropdownSearchDecoration {
     this.selectionColor,
     this.decoration,
     this.backgroundColor,
-    this.padding = const EdgeInsets.symmetric(horizontal: 8.0),
-    this.borderRadius,
+    this.padding = const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+    this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.borderWidth,
     this.borderColor,
   });
@@ -80,5 +89,10 @@ class DropdownSearchDecoration {
       borderWidth: borderWidth ?? this.borderWidth,
       borderColor: borderColor ?? this.borderColor,
     );
+  }
+
+  @override
+  String toString() {
+    return 'DropdownSearchDecoration(hintText: $hintText)';
   }
 }
