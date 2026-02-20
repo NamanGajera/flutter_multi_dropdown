@@ -357,7 +357,7 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                       items: currencies,
                       controller: currenciesController,
                       selectionMode: DropdownSelectionMode.single,
-                      initialSingleValue: currencies.first,
+                      initialSingleValue: currencies.first.id,
                       autoCloseOnItemTap: true,
                       onSingleItemSelected: (selectedId) {
                         debugPrint("Selected Id: $selectedId");

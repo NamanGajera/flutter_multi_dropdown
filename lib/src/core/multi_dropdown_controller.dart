@@ -47,16 +47,20 @@ class MultiDropdownController<T> extends ChangeNotifier {
   /// controller.updateSelection([101, 102, 103]);
   /// ```
   void updateSelection(List<T> ids) {
-    _selectedIds = List<T>.from(ids);
-    notifyListeners();
+    if (!listEquals(_selectedIds, ids)) {
+      _selectedIds = List<T>.from(ids);
+      notifyListeners();
+    }
   }
 
   /// Clears the current selection
   ///
   /// Notifies all listeners of the change
   void clearSelection() {
-    _selectedIds.clear();
-    notifyListeners();
+    if (_selectedIds.isNotEmpty) {
+      _selectedIds.clear();
+      notifyListeners();
+    }
   }
 
   /// Adds a single ID to the selection
