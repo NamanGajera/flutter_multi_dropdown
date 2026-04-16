@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_dropdown/src/themes/dropdown_check_box_decoration.dart';
+import 'package:flutter_multi_dropdown/src/themes/dropdown_decoration.dart';
+import 'package:flutter_multi_dropdown/src/themes/dropdown_style.dart';
+import 'package:flutter_multi_dropdown/src/themes/dropdown_text_style.dart';
 import 'package:flutter_multi_dropdown/src/utils/dropdown_helpers.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_multi_dropdown/flutter_multi_dropdown.dart';
@@ -1211,13 +1215,19 @@ void main() {
             body: FlutterMultiDropdown<String>(
               items: items,
               decoration: DropdownDecoration(
-                borderRadius: 12.0,
-                borderColor: Colors.red,
-                backgroundColor: Colors.blue,
-                placeholderTextStyle: const TextStyle(color: Colors.green),
-                checkboxActiveColor: Colors.orange,
+                textStyle: DropdownTextStyle(
+                  placeholder: const TextStyle(color: Colors.green),
+                ),
+                checkboxDecoration: DropdownCheckboxDecoration(
+                  activeColor: Colors.orange,
+                ),
                 maxVisibleItems: 8,
                 minHeight: 150.0,
+                dropdownStyle: DropdownStyle(
+                  borderRadius: 12.0,
+                  borderColor: Colors.red,
+                  backgroundColor: Colors.blue,
+                ),
               ),
             ),
           ),
@@ -1251,7 +1261,9 @@ void main() {
             body: FlutterMultiDropdown<String>(
               items: items,
               decoration: DropdownDecoration(
-                dropdownListDecoration: customDecoration,
+                dropdownStyle: DropdownStyle(
+                  fieldDecoration: customDecoration,
+                ),
               ),
             ),
           ),

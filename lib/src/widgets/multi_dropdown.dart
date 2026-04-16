@@ -655,8 +655,8 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
               showWhenUnlinked: false,
               offset: _calculateDropdownOffset(size, screenSize, position),
               child: Material(
-                elevation: widget.decoration.elevation,
-                borderRadius: BorderRadius.circular(widget.decoration.borderRadius),
+                elevation: widget.decoration.dropdownStyle.elevation,
+                borderRadius: BorderRadius.circular(widget.decoration.dropdownStyle.borderRadius),
                 child: Container(
                   constraints: BoxConstraints(
                     maxHeight: DropdownHelpers.calculateDropdownHeight(
@@ -670,11 +670,11 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                       isEmpty: widget.isEmptyData,
                     ),
                   ),
-                  decoration: widget.decoration.dropdownListDecoration ??
+                  decoration: widget.decoration.dropdownStyle.listDecoration ??
                       BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(widget.decoration.borderRadius),
-                        border: Border.all(color: widget.decoration.borderColor),
+                        borderRadius: BorderRadius.circular(widget.decoration.dropdownStyle.borderRadius),
+                        border: Border.all(color: widget.decoration.dropdownStyle.borderColor),
                       ),
                   child: _buildDropdownContent(),
                 ),
@@ -810,7 +810,7 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
   }
 
   TextStyle? _getTextStyle() {
-    return _effectiveController.selectedIds.isEmpty ? widget.decoration.placeholderTextStyle : widget.decoration.selectedItemTextStyle;
+    return _effectiveController.selectedIds.isEmpty ? widget.decoration.textStyle.placeholder : widget.decoration.textStyle.selectedItem;
   }
 
   Widget _buildDropdownContent() {
@@ -923,11 +923,11 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                 onTap: () => _isDropdownOpen.value = !isOpen,
                 child: Container(
                   padding: widget.decoration.contentPadding,
-                  decoration: widget.decoration.dropdownDecoration ??
+                  decoration: widget.decoration.dropdownStyle.fieldDecoration ??
                       BoxDecoration(
-                        border: Border.all(color: widget.decoration.borderColor),
-                        borderRadius: BorderRadius.circular(widget.decoration.borderRadius),
-                        color: widget.decoration.backgroundColor,
+                        border: Border.all(color: widget.decoration.dropdownStyle.borderColor),
+                        borderRadius: BorderRadius.circular(widget.decoration.dropdownStyle.borderRadius),
+                        color: widget.decoration.dropdownStyle.backgroundColor,
                       ),
                   child: Row(
                     children: [
@@ -947,8 +947,8 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                       if (widget.suffix != null) widget.suffix!,
                       if (widget.suffix == null)
                         isOpen
-                            ? widget.decoration.closeDropdownIcon ?? const Icon(Icons.close, size: 20)
-                            : widget.decoration.openDropdownIcon ?? const Icon(Icons.arrow_drop_down, size: 20),
+                            ? widget.decoration.iconDecoration.closeIcon ?? const Icon(Icons.close, size: 20)
+                            : widget.decoration.iconDecoration.openIcon ?? const Icon(Icons.arrow_drop_down, size: 20),
                     ],
                   ),
                 ),

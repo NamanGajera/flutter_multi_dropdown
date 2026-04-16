@@ -171,8 +171,8 @@ class DropdownSelectAllTile extends StatelessWidget {
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           checkboxTheme: CheckboxThemeData(
             side: BorderSide(
-              color: decoration.checkboxInActiveColor ?? const Color(0xFF757575),
-              width: decoration.checkboxBorderWidth,
+              color: decoration.checkboxDecoration.activeColor ?? const Color(0xFF757575),
+              width: decoration.checkboxDecoration.borderWidth,
             ),
           ),
         ),
@@ -181,12 +181,12 @@ class DropdownSelectAllTile extends StatelessWidget {
           dense: true,
           title: Text(
             selectAllText ?? 'Select All',
-            style: decoration.itemTextStyle,
+            style: decoration.textStyle.item,
           ),
-          checkColor: decoration.checkColor ?? const Color(0xFFFFFFFF),
+          checkColor: decoration.checkboxDecoration.checkIconColor ?? const Color(0xFFFFFFFF),
           value: isSelected,
           onChanged: onChanged,
-          activeColor: decoration.checkboxActiveColor,
+          activeColor: decoration.checkboxDecoration.activeColor,
           controlAffinity: ListTileControlAffinity.leading,
         ),
       ),

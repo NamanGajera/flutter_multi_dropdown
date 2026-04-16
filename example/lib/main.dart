@@ -259,10 +259,12 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                         );
                       },
                       decoration: const DropdownDecoration(
-                        backgroundColor: Colors.white,
+                        dropdownStyle: DropdownStyle(
+                          backgroundColor: Colors.white,
+                          borderRadius: 12,
+                          borderColor: Color(0xFFE2E8F0),
+                        ),
                         maxVisibleItems: 5,
-                        borderRadius: 12,
-                        borderColor: Color(0xFFE2E8F0),
                       ),
                       placeholder: 'Select countries',
                     ),
@@ -280,15 +282,19 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                       enableSearch: true,
                       showSelectAll: true,
                       decoration: const DropdownDecoration(
-                        backgroundColor: Colors.white,
-                        borderRadius: 12,
-                        borderColor: Color(0xFFE2E8F0),
+                        dropdownStyle: DropdownStyle(
+                          backgroundColor: Colors.white,
+                          borderRadius: 12,
+                          borderColor: Color(0xFFE2E8F0),
+                        ),
                         searchDecoration: DropdownSearchDecoration(
                           backgroundColor: Color(0xFFF8FAFC),
                           borderColor: Color(0xFFE2E8F0),
                           hintText: 'Search languages',
                         ),
-                        checkboxActiveColor: Color(0xFF0F172A),
+                        checkboxDecoration: DropdownCheckboxDecoration(
+                          activeColor: Color(0xFF0F172A),
+                        ),
                       ),
                       placeholder: 'Select languages',
                     ),
@@ -313,10 +319,14 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                         );
                       },
                       decoration: const DropdownDecoration(
-                        backgroundColor: Colors.white,
-                        borderRadius: 12,
-                        borderColor: Color(0xFFE2E8F0),
-                        checkboxActiveColor: Color(0xFF0F172A),
+                        dropdownStyle: DropdownStyle(
+                          backgroundColor: Colors.white,
+                          borderRadius: 12,
+                          borderColor: Color(0xFFE2E8F0),
+                        ),
+                        checkboxDecoration: DropdownCheckboxDecoration(
+                          activeColor: Color(0xFF0F172A),
+                        ),
                       ),
                       placeholder: 'Select up to 3 priorities',
                     ),
@@ -334,14 +344,18 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                       showSelectedItemName: false,
                       enableSearch: true,
                       decoration: const DropdownDecoration(
-                        backgroundColor: Colors.white,
-                        borderRadius: 12,
-                        borderColor: Color(0xFFE2E8F0),
+                        dropdownStyle: DropdownStyle(
+                          backgroundColor: Colors.white,
+                          borderRadius: 12,
+                          borderColor: Color(0xFFE2E8F0),
+                        ),
                         searchDecoration: DropdownSearchDecoration(
                           backgroundColor: Color(0xFFF8FAFC),
                           borderColor: Color(0xFFE2E8F0),
                         ),
-                        checkboxActiveColor: Color(0xFF0F172A),
+                        checkboxDecoration: DropdownCheckboxDecoration(
+                          activeColor: Color(0xFF0F172A),
+                        ),
                       ),
                       placeholder: 'Select departments',
                     ),
@@ -364,10 +378,14 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                       },
                       showSelectAll: false,
                       decoration: const DropdownDecoration(
-                        backgroundColor: Colors.white,
-                        borderRadius: 12,
-                        borderColor: Color(0xFFE2E8F0),
-                        checkboxActiveColor: Color(0xFF0F172A),
+                        dropdownStyle: DropdownStyle(
+                          backgroundColor: Colors.white,
+                          borderRadius: 12,
+                          borderColor: Color(0xFFE2E8F0),
+                        ),
+                        checkboxDecoration: DropdownCheckboxDecoration(
+                          activeColor: Color(0xFF0F172A),
+                        ),
                       ),
                       placeholder: 'Select currency',
                     ),
@@ -460,9 +478,11 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                             ),
                           ),
                           decoration: const DropdownDecoration(
-                            backgroundColor: Colors.white,
-                            borderRadius: 12,
-                            borderColor: Color(0xFFE2E8F0),
+                            dropdownStyle: DropdownStyle(
+                              backgroundColor: Colors.white,
+                              borderRadius: 12,
+                              borderColor: Color(0xFFE2E8F0),
+                            ),
                             minHeight: 260,
                           ),
                           placeholder: 'Select items',
@@ -526,10 +546,14 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                           items: skills,
                           controller: skillsController,
                           decoration: const DropdownDecoration(
-                            backgroundColor: Colors.white,
-                            borderRadius: 12,
-                            borderColor: Color(0xFFE2E8F0),
-                            checkboxActiveColor: Color(0xFF0F172A),
+                            dropdownStyle: DropdownStyle(
+                              backgroundColor: Colors.white,
+                              borderRadius: 12,
+                              borderColor: Color(0xFFE2E8F0),
+                            ),
+                            checkboxDecoration: DropdownCheckboxDecoration(
+                              activeColor: Color(0xFF0F172A),
+                            ),
                           ),
                           placeholder: 'Select skills',
                         ),

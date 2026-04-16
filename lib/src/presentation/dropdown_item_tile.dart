@@ -142,14 +142,14 @@ class DropdownItemTile<T> extends StatelessWidget {
                   dense: true,
                   title: Text(
                     item.name,
-                    style: decoration.itemTextStyle?.copyWith(
-                      color: item.enabled ? (decoration.itemTextStyle?.color ?? Colors.black) : Colors.grey,
+                    style: decoration.textStyle.item?.copyWith(
+                      color: item.enabled ? (decoration.textStyle.item?.color ?? Colors.black) : Colors.grey,
                     ),
                   ),
                   value: item.id,
                   groupValue: isSelected ? item.id : null,
                   onChanged: item.enabled ? (_) => onChanged?.call(!isSelected) : null,
-                  activeColor: decoration.checkboxActiveColor,
+                  activeColor: decoration.checkboxDecoration.activeColor,
                   controlAffinity: ListTileControlAffinity.leading,
                 )
               : CheckboxListTile(
@@ -157,14 +157,14 @@ class DropdownItemTile<T> extends StatelessWidget {
                   dense: true,
                   title: Text(
                     item.name,
-                    style: decoration.itemTextStyle?.copyWith(
-                      color: item.enabled ? (decoration.itemTextStyle?.color ?? Colors.black) : Colors.grey,
+                    style: decoration.textStyle.item?.copyWith(
+                      color: item.enabled ? (decoration.textStyle.item?.color ?? Colors.black) : Colors.grey,
                     ),
                   ),
-                  checkColor: decoration.checkColor ?? const Color(0xFFFFFFFF),
+                  checkColor: decoration.checkboxDecoration.checkIconColor ?? const Color(0xFFFFFFFF),
                   value: isSelected,
                   onChanged: item.enabled ? onChanged : null,
-                  activeColor: decoration.checkboxActiveColor,
+                  activeColor: decoration.checkboxDecoration.activeColor,
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
         ),
