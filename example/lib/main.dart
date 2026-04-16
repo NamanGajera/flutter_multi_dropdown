@@ -463,6 +463,7 @@ class _DropdownShowcaseState extends State<DropdownShowcase> {
                             backgroundColor: Colors.white,
                             borderRadius: 12,
                             borderColor: Color(0xFFE2E8F0),
+                            minHeight: 260,
                           ),
                           placeholder: 'Select items',
                         ),

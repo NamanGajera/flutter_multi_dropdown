@@ -659,7 +659,16 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
                 borderRadius: BorderRadius.circular(widget.decoration.borderRadius),
                 child: Container(
                   constraints: BoxConstraints(
-                    maxHeight: screenSize.height * 0.4,
+                    maxHeight: DropdownHelpers.calculateDropdownHeight(
+                      itemCount: _filteredItems.value.length,
+                      maxVisibleItems: widget.decoration.maxVisibleItems,
+                      itemHeight: widget.decoration.itemHeight,
+                      minHeight: widget.decoration.minHeight,
+                      hasSearch: widget.enableSearch,
+                      hasSelectAll: widget.showSelectAll,
+                      isLoading: widget.showLoading,
+                      isEmpty: widget.isEmptyData,
+                    ),
                   ),
                   decoration: widget.decoration.dropdownListDecoration ??
                       BoxDecoration(
@@ -678,14 +687,42 @@ class _FlutterMultiDropdownState<T> extends State<FlutterMultiDropdown<T>> {
   }
 
   Offset _calculateDropdownOffset(Size widgetSize, Size screenSize, Offset position) {
-    final spaceBelow = screenSize.height - position.dy - widgetSize.height;
-    final spaceAbove = position.dy;
+    const double spacing = 5.0;
+    final double availableSpaceBelow = screenSize.height - position.dy - widgetSize.height;
+    final double availableSpaceAbove = position.dy;
 
-    if (spaceBelow < 200 && spaceAbove >= 200) {
-      return Offset(0, -200 - 5);
+    // Calculate approximate height needed for the dropdown
+    final double dropdownHeight = DropdownHelpers.calculateDropdownHeight(
+      itemCount: _filteredItems.value.length,
+      maxVisibleItems: widget.decoration.maxVisibleItems,
+      itemHeight: widget.decoration.itemHeight,
+      minHeight: widget.decoration.minHeight,
+      hasSearch: widget.enableSearch,
+      hasSelectAll: widget.showSelectAll,
+      isLoading: widget.showLoading,
+      isEmpty: widget.isEmptyData,
+    );
+
+    // Check if there's enough space below
+    if (availableSpaceBelow >= dropdownHeight + spacing) {
+      // Open below
+      return Offset(0, widgetSize.height + spacing);
     }
-
-    return Offset(0, widgetSize.height + 5);
+    // Check if there's enough space above
+    else if (availableSpaceAbove >= dropdownHeight + spacing) {
+      // Open above
+      return Offset(0, -dropdownHeight - spacing);
+    }
+    // Not enough space in either direction - choose the side with more space
+    else {
+      if (availableSpaceBelow >= availableSpaceAbove) {
+        // Open below with limited height
+        return Offset(0, widgetSize.height + spacing);
+      } else {
+        // Open above with limited height
+        return Offset(0, -dropdownHeight - spacing);
+      }
+    }
   }
 
   void _onControllerChanged() {
